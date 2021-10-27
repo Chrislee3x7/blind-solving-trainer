@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * BlindSolvingTrainer
@@ -12,19 +13,24 @@ import javax.swing.*;
 public class BlindSolvingTrainer {
 
     private static JFrame frame;
+    private static SettingsPanel settingsPanel;
+    private static CubeNet cubeNet;
 
     public static void main(String[] args) {
         setUpFrame();
-        frame.getContentPane().add(new SettingsPanel());
+        settingsPanel = new SettingsPanel();
+        cubeNet = new CubeNet();
+        frame.getContentPane().add(cubeNet);
+        frame.setBackground(new Color(163, 138, 150));
     }
 
     private static void setUpFrame() {
         frame = new JFrame("Blind Solving Trainer");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        //frame.getContentPane().add(emptyLabel, BorderLayout.CENTER);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setUndecorated(true);
         frame.pack();
         frame.setVisible(true);
+
     }
 }
