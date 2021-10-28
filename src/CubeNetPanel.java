@@ -4,7 +4,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
-public class CubeNet extends JPanel implements MouseListener {
+public class CubeNetPanel extends JPanel implements MouseListener {
 
     // array of cube faces that correspond to the six face of the cube
     // indexed 0 - 5: [0: U, 1: L, 2: F, 3: R, 4: B, 5: D]
@@ -22,31 +22,60 @@ public class CubeNet extends JPanel implements MouseListener {
     private int singleStickerDimension;
     private int stickerBorderThickness;
 
+    private JLayeredPane layeredPane;
+    private JPanel buttonPanel;
+
     // for mouseListener
     private ArrayList<Point> clickedPoints = new ArrayList<>();
     private Sticker pressedSticker;
+    private ModeCycleJButton button;
 
     /**
-     * Instantiates a CubeNet object with default CubeFace colors
+     * Instantiates a CubeNetPanel object with default CubeFace colors
      *
      */
-    public CubeNet() {
+    public CubeNetPanel() {
         super();
         setOpaque(true);
         addMouseListener(this);
-        setPreferredSize(new Dimension(1000, 700));
         cubeFaces = new CubeFace[6];
-        singleFaceDimension = getSize().width / 5;
-        //setBorder(BorderFactory.createLineBorder(Color.YELLOW, 3));
         for (int i = 0; i < 6; i++) {
             cubeFaces[i] = new CubeFace(defaultColorScheme[i]);
             cubeFaces[i].setAllMemosToDefault(i);
         }
+        setUpSwitchMemoEditButton();
+//        layeredPane.setPreferredSize(new Dimension(1000, 700));
+        add(layeredPane);
+        buttonPanel.add(button, BorderLayout.LINE_END);
+    }
+
+    private void setUpSwitchMemoEditButton() {
+        buttonPanel = new JPanel(new BorderLayout());
+        button = new ModeCycleJButton("Corners", "Edges");
+        button.setPreferredSize(new Dimension(60, 60));
+        buttonPanel.setOpaque(false);
+        button.setActionCommand("test button");
+        button.addActionListener(e -> {
+            String actionCommand = e.getActionCommand();
+            if (actionCommand.equals("test button")) {
+                System.out.println("Button pressed");
+            }
+        });
+        layeredPane = new JLayeredPane();
+        layeredPane.add(buttonPanel, JLayeredPane.MODAL_LAYER);
     }
 
     public void updatePanelDimension() {
+        setBounds(getParent().getBounds());
         panelDimension = getSize();
+        layeredPane.setBounds(getParent().getBounds());
+        //layeredPane.setBorder(BorderFactory.createLineBorder(Color.BLUE));
+        buttonPanel.setBounds(getParent().getBounds());
+//        buttonPanel.setBorder(BorderFactory.createLineBorder(Color.YELLOW));
         singleFaceDimension = panelDimension.width / 6;
+        if (panelDimension.height / 3.5 < singleFaceDimension) {
+            singleFaceDimension = (int) (panelDimension.height / 3.5);
+        }
         singleStickerDimension = singleFaceDimension / 3;
         stickerBorderThickness = singleFaceDimension / 30;
     }
@@ -55,14 +84,14 @@ public class CubeNet extends JPanel implements MouseListener {
         cubeFaces[faceIndex].setColor(color);
     }
 
+    // Painting the JPanel methods
     @Override
     public void paintComponent(Graphics g) {
+        super.paintComponent(g);
         updatePanelDimension();
         setBackground(new Color(163, 138, 150));
         paintCubeNet(g);
     }
-
-
 
     private void paintCubeNet(Graphics g) {
         int centerVertTopLeftCornerX = (panelDimension.width / 2) - (singleFaceDimension * 2); // centered for face 1
@@ -114,7 +143,7 @@ public class CubeNet extends JPanel implements MouseListener {
     }
 
     private void paintMemo(Graphics g, Sticker sticker) {
-        Font font = new Font("Helvetica", Font.PLAIN, 30);
+        Font font = new Font("Helvetica", Font.PLAIN, singleStickerDimension / 2);
         g.setFont(font);
         FontMetrics fm = g.getFontMetrics();
         String memo = sticker.getMemo() + "";

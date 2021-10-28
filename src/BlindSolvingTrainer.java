@@ -14,23 +14,50 @@ public class BlindSolvingTrainer {
 
     private static JFrame frame;
     private static SettingsPanel settingsPanel;
-    private static CubeNet cubeNet;
+    private static CubeNetPanel cubeNetPanel;
+    private static JLayeredPane layeredPane;
+
+    private static JPanel buttonPanel;
 
     public static void main(String[] args) {
+        cubeNetPanel = new CubeNetPanel();
         setUpFrame();
-        settingsPanel = new SettingsPanel();
+        cubeNetPanel.setBounds(frame.getBounds());
+        frame.add(cubeNetPanel);
+//        layeredPane = frame.getLayeredPane();
+//        layeredPane.add(cubeNetPanel);
+//        layeredPane.setLayer(cubeNetPanel, JLayeredPane.DEFAULT_LAYER);
+        //setUpSwitchMemoEditButton();
     }
+
+//    private static void setUpSwitchMemoEditButton() {
+//        buttonPanel = new JPanel(new BorderLayout());
+//        ModeCycleJButton button = new ModeCycleJButton("Corners", "Edges");
+//        //button.setBackground(Color.RED);
+//        //button.setOpaque(true);
+//        //button.setBounds(1000, 20, 60, 60);
+//        buttonPanel.setBounds(0, 0, 1000, 700);
+//        buttonPanel.setOpaque(false);
+//        buttonPanel.add(button, BorderLayout.EAST);
+//        button.setActionCommand("test button");
+//        button.addActionListener(e -> {
+//            String actionCommand = e.getActionCommand();
+//            if (actionCommand.equals("test button")) {
+//                System.out.println("Button pressed");
+//            }
+//        });
+//        layeredPane.add(buttonPanel, JLayeredPane.MODAL_LAYER);
+//    }
 
     private static void setUpFrame() {
         frame = new JFrame("Blind Solving Trainer");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        //frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        frame.setPreferredSize(new Dimension(1000, 700));
-        frame.setBackground(new Color(163, 138, 150));
+        //frame.setPreferredSize(new Dimension(1000, 700));
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setUndecorated(false);
-        cubeNet = new CubeNet();
-        frame.getContentPane().add(cubeNet);
+//        frame.getContentPane().add(cubeNetPanel);
         frame.pack();
+        frame.setMinimumSize(new Dimension(900, 600));
         frame.setVisible(true);
         frame.setResizable(true);
 

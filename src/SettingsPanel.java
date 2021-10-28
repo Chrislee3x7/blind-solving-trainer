@@ -1,15 +1,14 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class SettingsPanel extends JComponent {
+public class SettingsPanel extends JPanel {
 
     private int width;
-    private CubeNet cubeNet;
-
+    private CubeNetPanel cubeNetPanel;
 
     public SettingsPanel() {
         super();
-        cubeNet = new CubeNet();
+        cubeNetPanel = new CubeNetPanel();
         setBackground(Color.YELLOW);
     }
 
