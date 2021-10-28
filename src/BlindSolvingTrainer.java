@@ -19,18 +19,20 @@ public class BlindSolvingTrainer {
     public static void main(String[] args) {
         setUpFrame();
         settingsPanel = new SettingsPanel();
-        cubeNet = new CubeNet();
-        frame.getContentPane().add(cubeNet);
-        frame.setBackground(new Color(163, 138, 150));
     }
 
     private static void setUpFrame() {
         frame = new JFrame("Blind Solving Trainer");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        frame.setUndecorated(true);
+        //frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.setPreferredSize(new Dimension(1000, 700));
+        frame.setBackground(new Color(163, 138, 150));
+        frame.setUndecorated(false);
+        cubeNet = new CubeNet();
+        frame.getContentPane().add(cubeNet);
         frame.pack();
         frame.setVisible(true);
+        frame.setResizable(true);
 
     }
 }
