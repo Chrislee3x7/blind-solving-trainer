@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.border.EtchedBorder;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -15,16 +17,15 @@ public class ModeCycleJButton extends JButton {
         this.modesTexts.addAll(Arrays.asList(modesTexts));
         setUpActionListener();
         setText(modesTexts[0]);
+        //setBorder(BorderFactory.createMatteBorder(4, 4, 4, 4, Color.GRAY));
+        setFocusPainted(false);
         modesTextsIndex = 0;
     }
 
     private void setUpActionListener() {
-        addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (e.getActionCommand().equals(getActionCommand())) {
-                    cycleMode();
-                }
+        addActionListener(e -> {
+            if (e.getActionCommand().equals(getActionCommand())) {
+                cycleMode();
             }
         });
     }

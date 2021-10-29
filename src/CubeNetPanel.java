@@ -22,14 +22,10 @@ public class CubeNetPanel extends JPanel implements MouseListener {
     private int singleStickerDimension;
     private int stickerBorderThickness;
 
-    private JLayeredPane layeredPane;
-    private JPanel buttonPanel;
 
     // for mouseListener
     private ArrayList<Point> clickedPoints = new ArrayList<>();
     private Sticker pressedSticker;
-    private ModeCycleJButton button;
-
     /**
      * Instantiates a CubeNetPanel object with default CubeFace colors
      *
@@ -43,35 +39,10 @@ public class CubeNetPanel extends JPanel implements MouseListener {
             cubeFaces[i] = new CubeFace(defaultColorScheme[i]);
             cubeFaces[i].setAllMemosToDefault(i);
         }
-        setUpSwitchMemoEditButton();
-//        layeredPane.setPreferredSize(new Dimension(1000, 700));
-        add(layeredPane);
-        buttonPanel.add(button, BorderLayout.LINE_END);
-    }
-
-    private void setUpSwitchMemoEditButton() {
-        buttonPanel = new JPanel(new BorderLayout());
-        button = new ModeCycleJButton("Corners", "Edges");
-        button.setPreferredSize(new Dimension(60, 60));
-        buttonPanel.setOpaque(false);
-        button.setActionCommand("test button");
-        button.addActionListener(e -> {
-            String actionCommand = e.getActionCommand();
-            if (actionCommand.equals("test button")) {
-                System.out.println("Button pressed");
-            }
-        });
-        layeredPane = new JLayeredPane();
-        layeredPane.add(buttonPanel, JLayeredPane.MODAL_LAYER);
     }
 
     public void updatePanelDimension() {
-        setBounds(getParent().getBounds());
         panelDimension = getSize();
-        layeredPane.setBounds(getParent().getBounds());
-        //layeredPane.setBorder(BorderFactory.createLineBorder(Color.BLUE));
-        buttonPanel.setBounds(getParent().getBounds());
-//        buttonPanel.setBorder(BorderFactory.createLineBorder(Color.YELLOW));
         singleFaceDimension = panelDimension.width / 6;
         if (panelDimension.height / 3.5 < singleFaceDimension) {
             singleFaceDimension = (int) (panelDimension.height / 3.5);
@@ -89,7 +60,7 @@ public class CubeNetPanel extends JPanel implements MouseListener {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         updatePanelDimension();
-        setBackground(new Color(163, 138, 150));
+        setBackground(new Color(175, 208, 191));
         paintCubeNet(g);
     }
 
