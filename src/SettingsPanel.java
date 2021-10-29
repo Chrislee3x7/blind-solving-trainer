@@ -3,23 +3,21 @@ import java.awt.*;
 
 public class SettingsPanel extends JPanel {
 
-    ModeCycleJButton toggleMemoEditModeButton;
+    private ModeCycleJButton toggleMemoEditModeButton;
+    private BlindSolvingTrainer blindSolvingTrainer;
 
-    public SettingsPanel() {
+    public SettingsPanel(BlindSolvingTrainer blindSolvingTrainer) {
         super();
         setOpaque(true);
         setLayout(new GridBagLayout());
+        this.blindSolvingTrainer = blindSolvingTrainer;
     }
 
-    public void setUpSwitchMemoEditButton() {
+    public ModeCycleJButton setUpSwitchMemoEditButton() {
         toggleMemoEditModeButton = new ModeCycleJButton("Corners", "Edges");
         toggleMemoEditModeButton.setPreferredSize(new Dimension(100, 80));
-        toggleMemoEditModeButton.setActionCommand("test button");
         toggleMemoEditModeButton.addActionListener(e -> {
-            String actionCommand = e.getActionCommand();
-            if (actionCommand.equals("test button")) {
-                System.out.println("Button pressed");
-            }
+
         });
         GridBagConstraints c = new GridBagConstraints();
         c.weightx = 1;
@@ -27,6 +25,7 @@ public class SettingsPanel extends JPanel {
         c.anchor = GridBagConstraints.PAGE_START;
         c.fill = GridBagConstraints.HORIZONTAL;
         add(toggleMemoEditModeButton, c);
+        return toggleMemoEditModeButton;
     }
 
     public void paintComponent(Graphics g) {

@@ -21,7 +21,7 @@ public class CubeNetPanel extends JPanel implements MouseListener {
     private int singleFaceDimension;
     private int singleStickerDimension;
     private int stickerBorderThickness;
-
+    private StickerType memoEditMode;
 
     // for mouseListener
     private ArrayList<Point> clickedPoints = new ArrayList<>();
@@ -39,6 +39,7 @@ public class CubeNetPanel extends JPanel implements MouseListener {
             cubeFaces[i] = new CubeFace(defaultColorScheme[i]);
             cubeFaces[i].setAllMemosToDefault(i);
         }
+        setMemoEditMode(StickerType.CORNER);
     }
 
     public void updatePanelDimension() {
@@ -53,6 +54,13 @@ public class CubeNetPanel extends JPanel implements MouseListener {
 
     public void setFaceColor(int faceIndex, Color color) {
         cubeFaces[faceIndex].setColor(color);
+    }
+
+    public void setMemoEditMode(StickerType memoEditMode) {
+        this.memoEditMode = memoEditMode;
+        for (CubeFace face : cubeFaces) {
+            face.setMemoEditMode(memoEditMode);
+        }
     }
 
     // Painting the JPanel methods
@@ -95,9 +103,13 @@ public class CubeNetPanel extends JPanel implements MouseListener {
             int stickerStartX = faceStartX + ((i % 3) * singleFaceDimension / 3);
             int stickerStartY = faceStartY + ((i / 3) * singleFaceDimension / 3);
             paintSticker(g, stickerStartX, stickerStartY, sticker);
-            if (i != 4) {
-                paintMemo(g, sticker);
-            }
+//            if (i != 4 && memoEditMode != null) {
+//                if (memoEditMode.equals("Corners")  && i % 2 == 0) {
+//                    paintMemo(g, sticker);
+//                } else if (memoEditMode.equals("Edges")  && i % 2 == 1) {
+//                    paintMemo(g, sticker);
+//                }
+//            }
         }
     }
 
@@ -111,9 +123,13 @@ public class CubeNetPanel extends JPanel implements MouseListener {
                 singleFaceDimension / 3 - stickerBorderThickness,
                 singleFaceDimension / 3 - stickerBorderThickness);
         g.fillRect(sticker.x, sticker.y, sticker.width, sticker.height);
+        paintMemo(g, sticker);
     }
 
     private void paintMemo(Graphics g, Sticker sticker) {
+        if (sticker.getStickerType() != memoEditMode) {
+            return;
+        }
         Font font = new Font("Helvetica", Font.PLAIN, singleStickerDimension / 2);
         g.setFont(font);
         FontMetrics fm = g.getFontMetrics();

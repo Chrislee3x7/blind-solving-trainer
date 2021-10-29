@@ -19,6 +19,8 @@ public class CubeFace extends Rectangle {
     // | 6 7 8 |
     private Sticker[] allStickers;
 
+    private StickerType memoEditMode;
+
     private Color color;
 
     public static final char[][] DEFAULT_MEMOS = new char[][]{
@@ -38,18 +40,19 @@ public class CubeFace extends Rectangle {
     public CubeFace(Color color) {
         super();
         this.color = color;
+        //this.memoEditMode = memoEditMode;
         cornerStickers = new Sticker[4];
         edgeStickers = new Sticker[4];
         for (int i = 0; i < 4; i++) {
-            cornerStickers[i] = new Sticker(color, '-');
-            edgeStickers[i] = new Sticker(color, '-');
+            cornerStickers[i] = new Sticker(color, '-', StickerType.CORNER);
+            edgeStickers[i] = new Sticker(color, '-', StickerType.EDGE);
         }
         updateAllStickersArray();
     }
 
     public void updateAllStickersArray() {
         allStickers = new Sticker[]{cornerStickers[0], edgeStickers[0], cornerStickers[1], edgeStickers[3],
-                new Sticker(color, '-'), edgeStickers[1], cornerStickers[3], edgeStickers[2], cornerStickers[2]};
+                new Sticker(color, '-', StickerType.CENTER), edgeStickers[1], cornerStickers[3], edgeStickers[2], cornerStickers[2]};
     }
 
     public void setColor(Color color) {
@@ -119,12 +122,30 @@ public class CubeFace extends Rectangle {
         return allStickers[index];
     }
 
+    public void setMemoEditMode(StickerType memoEditMode) {
+        this.memoEditMode = memoEditMode;
+    }
+
     public Sticker findClickedSticker(Point clickLoc) {
-        for (Sticker sticker : allStickers) {
-            if (sticker.contains(clickLoc)) {
-                return sticker;
+        if (memoEditMode == StickerType.CORNER) {
+            for (Sticker sticker : cornerStickers) {
+                if (sticker.contains(clickLoc)) {
+                    return sticker;
+                }
+            }
+        } else if (memoEditMode == StickerType.EDGE) {
+            for (Sticker sticker: edgeStickers) {
+                if (sticker.contains(clickLoc)) {
+                    return sticker;
+                }
             }
         }
+        // search through all stickers
+//        for (Sticker sticker : allStickers) {
+//            if (sticker.contains(clickLoc)) {
+//                return sticker;
+//            }
+//        }
         return null;
     }
 

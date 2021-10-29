@@ -12,13 +12,15 @@ import java.awt.*;
  */
 public class BlindSolvingTrainer {
 
-    private static JFrame frame;
-    private static SettingsPanel settingsPanel;
-    private static CubeNetPanel cubeNetPanel;
+    private static BlindSolvingTrainer blindSolvingTrainer;
+    private JFrame frame;
+    private SettingsPanel settingsPanel;
+    private CubeNetPanel cubeNetPanel;
+    private ModeCycleJButton changeMemoEditModeButton;
 
-    public static void main(String[] args) {
+    public BlindSolvingTrainer() {
         cubeNetPanel = new CubeNetPanel();
-        settingsPanel = new SettingsPanel();
+        settingsPanel = new SettingsPanel(this);
         setUpFrame();
         cubeNetPanel.setBounds(frame.getBounds());
         GridBagConstraints c = new GridBagConstraints();
@@ -34,10 +36,20 @@ public class BlindSolvingTrainer {
         c.weightx = 1;
         c.weighty = 1;
         frame.add(settingsPanel, c);
-        settingsPanel.setUpSwitchMemoEditButton();
+        changeMemoEditModeButton = settingsPanel.setUpSwitchMemoEditButton();
+        cubeNetPanel.setMemoEditMode(changeMemoEditModeButton.getModeType());
+        changeMemoEditModeButton.addActionListener(e -> {
+            changeMemoEditModeButton.cycleMode();
+            cubeNetPanel.setMemoEditMode(changeMemoEditModeButton.getModeType());
+            cubeNetPanel.repaint();
+        });
     }
 
-    public static void expandSettingsPanel() {
+    public static void main(String[] args) {
+        blindSolvingTrainer = new BlindSolvingTrainer();
+    }
+
+    public void expandSettingsPanel() {
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 1;
         c.gridy = 0;
@@ -47,14 +59,14 @@ public class BlindSolvingTrainer {
         settingsPanel.setUpSwitchMemoEditButton();
     }
 
-    public static void minimizeSettingsPanel() {
+    public void minimizeSettingsPanel() {
         GridBagConstraints c = new GridBagConstraints();
         c.weightx = 0;
         c.weighty = 1;
         frame.remove(settingsPanel);
     }
 
-    private static void setUpFrame() {
+    private void setUpFrame() {
         frame = new JFrame("Blind Solving Trainer");
         frame.setLayout(new GridBagLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -66,6 +78,5 @@ public class BlindSolvingTrainer {
         frame.setMinimumSize(new Dimension(900, 600));
         frame.setVisible(true);
         frame.setResizable(true);
-
     }
 }

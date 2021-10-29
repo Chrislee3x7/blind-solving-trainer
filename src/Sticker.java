@@ -8,7 +8,9 @@ public class Sticker extends Rectangle {
     // '-' is representative of a blank/undecided memo letter
     private char memo;
 
-    public Sticker(Color color, char memo, int startX, int startY, int sizeX, int sizeY) {
+    private StickerType stickerType;
+
+    public Sticker(Color color, char memo, int startX, int startY, int sizeX, int sizeY, StickerType stickerType) {
         super();
 //        setBorder(BorderFactory.createEmptyBorder());
 //        setContentAreaFilled(false);
@@ -17,15 +19,21 @@ public class Sticker extends Rectangle {
 //        setSize(sizeX, sizeY);
         this.color = color;
         this.memo = memo;
+        this.stickerType = stickerType;
     }
 
-    public Sticker(Color color, char memo) {
+    public Sticker(Color color, char memo, StickerType stickerType) {
         super();
         this.color = color;
         this.memo = memo;
+        this.stickerType = stickerType;
 //        setBorder(BorderFactory.createEmptyBorder());
 //        setContentAreaFilled(false);
 //        setBackground(color);
+    }
+
+    public StickerType getStickerType() {
+        return stickerType;
     }
 
     public Color getColor() {
