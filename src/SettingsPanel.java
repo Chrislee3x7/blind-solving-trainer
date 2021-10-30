@@ -1,20 +1,47 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 public class SettingsPanel extends JPanel {
 
     private ModeCycleJButton toggleMemoEditModeButton;
-    private BlindSolvingTrainer blindSolvingTrainer;
 
-    public SettingsPanel(BlindSolvingTrainer blindSolvingTrainer) {
+    public SettingsPanel() {
         super();
         setOpaque(true);
         setLayout(new GridBagLayout());
-        this.blindSolvingTrainer = blindSolvingTrainer;
+        setFocusable(true);
+        addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                requestFocus();
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
     }
 
     public ModeCycleJButton setUpSwitchMemoEditButton() {
-        toggleMemoEditModeButton = new ModeCycleJButton("Corners", "Edges");
+        toggleMemoEditModeButton = new ModeCycleJButton("Mode: Corners", "Mode: Edges");
         toggleMemoEditModeButton.setPreferredSize(new Dimension(100, 80));
         toggleMemoEditModeButton.addActionListener(e -> {
 

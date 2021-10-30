@@ -1,47 +1,67 @@
-import javax.swing.*;
 import java.awt.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class Sticker extends Rectangle {
 
-    private Color color;
+    private Color trueColor;
+    private Color displayColor;
+    public static final Color BLINK_COLOR = new Color(126, 238, 234, 255);
     // the letter corresponding to the memo for this sticker
     // '-' is representative of a blank/undecided memo letter
     private char memo;
 
     private StickerType stickerType;
 
-    public Sticker(Color color, char memo, int startX, int startY, int sizeX, int sizeY, StickerType stickerType) {
+    private boolean editModeOn;
+
+    private boolean conflicted;
+
+
+    public Sticker(Color trueColor, char memo, StickerType stickerType) {
         super();
-//        setBorder(BorderFactory.createEmptyBorder());
-//        setContentAreaFilled(false);
-//        setBackground(color);
-//        setLocation(startX, startY);
-//        setSize(sizeX, sizeY);
-        this.color = color;
+        this.trueColor = trueColor;
+        this.displayColor = trueColor;
         this.memo = memo;
         this.stickerType = stickerType;
+        this.editModeOn = false;
     }
 
-    public Sticker(Color color, char memo, StickerType stickerType) {
-        super();
-        this.color = color;
-        this.memo = memo;
-        this.stickerType = stickerType;
-//        setBorder(BorderFactory.createEmptyBorder());
-//        setContentAreaFilled(false);
-//        setBackground(color);
+    public void setConflicted(boolean newConflicted) {
+        conflicted = newConflicted;
+    }
+
+    public void turnOnEditMode() {
+        editModeOn = true;
+    }
+
+    public void turnOffEditMode() {
+        editModeOn = false;
+    }
+
+    public boolean getEditModeOn() {
+        return editModeOn;
     }
 
     public StickerType getStickerType() {
         return stickerType;
     }
 
-    public Color getColor() {
-        return color;
+    public void setDisplayColor(Color newDisplayColor) {
+        displayColor = newDisplayColor;
     }
 
-    public void setColor(Color color) {
-        this.color = color;
+    public Color getDisplayColor() {
+        return displayColor;
+    }
+
+    public Color getTrueColor() {
+        return trueColor;
+    }
+
+    public void setTrueColor(Color trueColor) {
+        this.trueColor = trueColor;
     }
 
     public char getMemo() {

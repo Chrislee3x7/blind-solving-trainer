@@ -1,10 +1,12 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
-public class CubeNetPanel extends JPanel implements MouseListener {
+public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
 
     // array of cube faces that correspond to the six face of the cube
     // indexed 0 - 5: [0: U, 1: L, 2: F, 3: R, 4: B, 5: D]
@@ -26,6 +28,8 @@ public class CubeNetPanel extends JPanel implements MouseListener {
     // for mouseListener
     private ArrayList<Point> clickedPoints = new ArrayList<>();
     private Sticker pressedSticker;
+    private boolean editingMemo = false;
+
     /**
      * Instantiates a CubeNetPanel object with default CubeFace colors
      *
@@ -34,17 +38,31 @@ public class CubeNetPanel extends JPanel implements MouseListener {
         super();
         setOpaque(true);
         addMouseListener(this);
+        addKeyListener(this);
+        addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                turnOffEditMode(pressedSticker);
+            }
+        });
         cubeFaces = new CubeFace[6];
         for (int i = 0; i < 6; i++) {
             cubeFaces[i] = new CubeFace(defaultColorScheme[i]);
             cubeFaces[i].setAllMemosToDefault(i);
         }
         setMemoEditMode(StickerType.CORNER);
+        setFocusable(true);
+        requestFocusInWindow();
     }
 
     public void updatePanelDimension() {
         panelDimension = getSize();
-        singleFaceDimension = panelDimension.width / 6;
+        singleFaceDimension = panelDimension.width / 5;
         if (panelDimension.height / 3.5 < singleFaceDimension) {
             singleFaceDimension = (int) (panelDimension.height / 3.5);
         }
@@ -85,12 +103,6 @@ public class CubeNetPanel extends JPanel implements MouseListener {
         //paintClicks(g);
     }
 
-    private void paintClicks(Graphics g) {
-        for (Point p : clickedPoints) {
-            g.drawOval(p.x, p.y, 10, 10);
-        }
-    }
-
     private void paintFace(Graphics g, int faceStartX, int faceStartY, int faceIndex) {
         g.setColor(Color.BLACK);
         CubeFace cubeFace = cubeFaces[faceIndex];
@@ -114,7 +126,7 @@ public class CubeNetPanel extends JPanel implements MouseListener {
     }
 
     private void paintSticker (Graphics g, int stickerStartX, int stickerStartY, Sticker sticker) {
-        Color displayColor = sticker.getColor();
+        Color displayColor = sticker.getDisplayColor();
         g.setColor(displayColor);
 //        sticker.setLocation(stickerStartX + stickerBorderThickness, stickerStartY - stickerBorderThickness);
 //        sticker.setSize(singleStickerDimension - stickerBorderThickness, singleStickerDimension - stickerBorderThickness);
@@ -143,6 +155,16 @@ public class CubeNetPanel extends JPanel implements MouseListener {
                         + stringHeight / 2);
     }
 
+    public void turnOffEditMode(Sticker sticker) {
+        if (sticker != null) {
+            sticker.setDisplayColor(sticker.getTrueColor());
+            sticker.turnOffEditMode();
+            //System.out.println("turned off edit mode");
+            editingMemo = false;
+            pressedSticker = null;
+        }
+    }
+
     // MouseListener methods
     @Override
     public void mouseClicked(MouseEvent e) {
@@ -150,6 +172,12 @@ public class CubeNetPanel extends JPanel implements MouseListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
+        requestFocus();
+        if (pressedSticker != null) {
+            pressedSticker.setDisplayColor(pressedSticker.getTrueColor());
+            turnOffEditMode(pressedSticker);
+            return;
+        }
         Point clickLoc = MouseInfo.getPointerInfo().getLocation();
         SwingUtilities.convertPointFromScreen(clickLoc, this);
         Sticker clickedSticker;
@@ -158,7 +186,7 @@ public class CubeNetPanel extends JPanel implements MouseListener {
         for (CubeFace face : cubeFaces) {
             if (face.contains(clickLoc)) {
                 clickedSticker = face.findClickedSticker(clickLoc);
-                if (clickedSticker == null) {
+                if (clickedSticker == null || pressedSticker == clickedSticker) {
                     return;
                 }
                 pressedSticker = clickedSticker;
@@ -180,8 +208,29 @@ public class CubeNetPanel extends JPanel implements MouseListener {
                 if (clickedSticker == null || clickedSticker != pressedSticker) {
                     return;
                 }
-                clickedSticker.setColor(Color.CYAN);
-                repaint();
+                clickedSticker.turnOnEditMode();
+                editingMemo = true;
+                    final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+                    executorService.scheduleAtFixedRate(new Runnable() {
+                        @Override
+                        public void run() {
+                            //System.out.println("change now" + changeCount++);
+
+                            if (clickedSticker.getDisplayColor() == clickedSticker.getTrueColor()) {
+                                clickedSticker.setDisplayColor(Sticker.BLINK_COLOR);
+                            } else {
+                                clickedSticker.setDisplayColor(clickedSticker.getTrueColor());
+                            }
+                            repaint();
+                            if (!clickedSticker.getEditModeOn()) {
+                                turnOffEditMode(clickedSticker);
+                                repaint();
+                                executorService.shutdownNow();
+                            }
+                        }
+                    }, 0, 500, TimeUnit.MILLISECONDS);
+                    //clickedSticker.setColor(Color.CYAN);
+
                 return;
             }
         }
@@ -194,6 +243,29 @@ public class CubeNetPanel extends JPanel implements MouseListener {
 
     @Override
     public void mouseExited(MouseEvent e) {
+
+    }
+
+    // KeyListener methods
+    @Override
+    public void keyTyped(KeyEvent e) {
+        if (editingMemo) {
+            String s = e.getKeyChar() + "";
+            s = s.toUpperCase();
+            pressedSticker.setMemo(s.charAt(0));
+            //System.out.println("should change to: " + s.charAt(0));
+            turnOffEditMode(pressedSticker);
+            repaint();
+        }
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
 
     }
 }

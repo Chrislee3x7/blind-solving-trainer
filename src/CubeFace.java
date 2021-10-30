@@ -57,8 +57,8 @@ public class CubeFace extends Rectangle {
 
     public void setColor(Color color) {
         for (int i = 0; i < 4; i++) {
-            cornerStickers[i].setColor(color);
-            edgeStickers[i].setColor(color);
+            cornerStickers[i].setTrueColor(color);
+            edgeStickers[i].setTrueColor(color);
         }
         updateAllStickersArray();
     }

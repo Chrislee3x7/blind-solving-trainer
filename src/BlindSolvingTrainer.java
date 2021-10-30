@@ -20,7 +20,7 @@ public class BlindSolvingTrainer {
 
     public BlindSolvingTrainer() {
         cubeNetPanel = new CubeNetPanel();
-        settingsPanel = new SettingsPanel(this);
+        settingsPanel = new SettingsPanel();
         setUpFrame();
         cubeNetPanel.setBounds(frame.getBounds());
         GridBagConstraints c = new GridBagConstraints();
