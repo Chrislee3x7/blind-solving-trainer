@@ -17,6 +17,7 @@ public class BlindSolvingTrainer {
     private SettingsPanel settingsPanel;
     private CubeNetPanel cubeNetPanel;
     private ModeCycleJButton changeMemoEditModeButton;
+    private JButton loadDefaultMemoSchemeButton;
 
     public BlindSolvingTrainer() {
         cubeNetPanel = new CubeNetPanel();
@@ -41,6 +42,11 @@ public class BlindSolvingTrainer {
         changeMemoEditModeButton.addActionListener(e -> {
             changeMemoEditModeButton.cycleMode();
             cubeNetPanel.setMemoEditMode(changeMemoEditModeButton.getModeType());
+            cubeNetPanel.repaint();
+        });
+        loadDefaultMemoSchemeButton = settingsPanel.setUpLoadDefaultMemoSchemeButton();
+        loadDefaultMemoSchemeButton.addActionListener(e -> {
+            cubeNetPanel.setMemoSchemeToDefault();
             cubeNetPanel.repaint();
         });
     }

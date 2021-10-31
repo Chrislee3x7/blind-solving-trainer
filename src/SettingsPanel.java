@@ -7,6 +7,8 @@ public class SettingsPanel extends JPanel {
 
     private ModeCycleJButton toggleMemoEditModeButton;
 
+    private JButton loadDefaultMemosButton;
+
     public SettingsPanel() {
         super();
         setOpaque(true);
@@ -40,18 +42,35 @@ public class SettingsPanel extends JPanel {
         });
     }
 
+    public JButton setUpLoadDefaultMemoSchemeButton() {
+        loadDefaultMemosButton = new JButton("Load Default Memo Scheme");
+        loadDefaultMemosButton.setPreferredSize(new Dimension(100, 80));
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridy = 1;
+        c.weightx = 1;
+        c.weighty = 1;
+        c.insets = new Insets(0, 20,0, 20);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.anchor = GridBagConstraints.CENTER;
+        add(loadDefaultMemosButton, c);
+        Font font = new Font("Helvetica", Font.PLAIN, 20);
+        loadDefaultMemosButton.setFont(font);
+        return loadDefaultMemosButton;
+    }
+
     public ModeCycleJButton setUpSwitchMemoEditButton() {
         toggleMemoEditModeButton = new ModeCycleJButton("Mode: Corners", "Mode: Edges");
         toggleMemoEditModeButton.setPreferredSize(new Dimension(100, 80));
-        toggleMemoEditModeButton.addActionListener(e -> {
-
-        });
         GridBagConstraints c = new GridBagConstraints();
+        c.gridy = 0;
         c.weightx = 1;
         c.weighty = 1;
-        c.anchor = GridBagConstraints.PAGE_START;
+        c.insets = new Insets(0, 20,0, 20);
         c.fill = GridBagConstraints.HORIZONTAL;
+        c.anchor = GridBagConstraints.CENTER;
         add(toggleMemoEditModeButton, c);
+        Font font = new Font("Helvetica", Font.PLAIN, 20);
+        toggleMemoEditModeButton.setFont(font);
         return toggleMemoEditModeButton;
     }
 

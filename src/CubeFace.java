@@ -1,4 +1,8 @@
 import java.awt.*;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class CubeFace extends Rectangle {
 
@@ -48,6 +52,14 @@ public class CubeFace extends Rectangle {
             edgeStickers[i] = new Sticker(color, '-', StickerType.EDGE);
         }
         updateAllStickersArray();
+    }
+
+    public Sticker[] getCornerStickers() {
+        return cornerStickers;
+    }
+
+    public Sticker[] getEdgeStickers() {
+        return edgeStickers;
     }
 
     public void updateAllStickersArray() {

@@ -1,6 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -23,11 +25,11 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
     private int singleFaceDimension;
     private int singleStickerDimension;
     private int stickerBorderThickness;
-    private StickerType memoEditMode;
 
     // for mouseListener
-    private ArrayList<Point> clickedPoints = new ArrayList<>();
     private Sticker pressedSticker;
+
+    private StickerType memoEditMode;
     private boolean editingMemo = false;
 
     /**
@@ -53,11 +55,69 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
         cubeFaces = new CubeFace[6];
         for (int i = 0; i < 6; i++) {
             cubeFaces[i] = new CubeFace(defaultColorScheme[i]);
-            cubeFaces[i].setAllMemosToDefault(i);
         }
+        setMemoSchemeToSaved();
         setMemoEditMode(StickerType.CORNER);
         setFocusable(true);
         requestFocusInWindow();
+    }
+
+    public void setMemoSchemeToDefault() {
+        for (int i = 0; i < 6; i++) {
+            cubeFaces[i].setAllMemosToDefault(i);
+            cubeFaces[i].setAllMemosToDefault(i);
+        }
+    }
+
+    public void saveMemoScheme() {
+        File f = new File("src/Memos");
+        PrintWriter pw;
+        try {
+            pw = new PrintWriter(f);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return;
+        }
+        for (CubeFace face : cubeFaces) {
+            Sticker[] cornerStickers = face.getCornerStickers();
+            Sticker[] edgeStickers = face.getEdgeStickers();
+            for (int i = 0; i < cornerStickers.length; i++) {
+                pw.print(cornerStickers[i].getMemo());
+                pw.print(edgeStickers[i].getMemo());
+            }
+            pw.println();
+        }
+        pw.close();
+    }
+
+    public void setMemoSchemeToSaved() {
+        BufferedReader bfr = null;
+        try {
+            bfr = new BufferedReader(new FileReader("src/Memos"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        String line;
+        try {
+            line = bfr.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+        if (line == null) {
+            return;
+        }
+        for (CubeFace face : cubeFaces) {
+            for (int i = 0; i < 4; i++) {
+                face.setCornerMemo(i, line.charAt(i * 2));
+                face.setEdgeMemo(i, line.charAt(i * 2 + 1));
+            }
+            try {
+                line = bfr.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void updatePanelDimension() {
@@ -79,6 +139,30 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
         for (CubeFace face : cubeFaces) {
             face.setMemoEditMode(memoEditMode);
         }
+    }
+
+    public ArrayList<Sticker> findStickerConflicts(Sticker possibleConflict) {
+        ArrayList<Sticker> conflicts = new ArrayList<>();
+        StickerType st = possibleConflict.getStickerType();
+        char conflictMemo = possibleConflict.getMemo();
+        if (st == StickerType.CORNER) {
+            for (CubeFace face : cubeFaces) {
+                for (Sticker s : face.getCornerStickers()) {
+                    if (s.getMemo() == conflictMemo) {
+                        conflicts.add(s);
+                    }
+                }
+            }
+        } else if (st == StickerType.EDGE) {
+            for (CubeFace face : cubeFaces) {
+                for (Sticker s : face.getEdgeStickers()) {
+                    if (s.getMemo() == conflictMemo) {
+                        conflicts.add(s);
+                    }
+                }
+            }
+        }
+        return conflicts;
     }
 
     // Painting the JPanel methods
@@ -148,7 +232,11 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
         String memo = sticker.getMemo() + "";
         int stringWidth = fm.stringWidth(memo);
         int stringHeight = fm.getAscent();
-        g.setColor(Color.BLACK);
+        if (sticker.getConflicted()) {
+            g.setColor(Color.RED);
+        } else {
+            g.setColor(Color.BLACK);
+        }
         g.drawString(memo, sticker.x + (singleStickerDimension - stickerBorderThickness) / 2
                         - stringWidth / 2,
                 sticker.y + (singleStickerDimension - stickerBorderThickness) / 2
@@ -252,10 +340,29 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
         if (editingMemo) {
             String s = e.getKeyChar() + "";
             s = s.toUpperCase();
-            pressedSticker.setMemo(s.charAt(0));
-            //System.out.println("should change to: " + s.charAt(0));
+            char c = s.charAt(0);
+            if ((c >= 65 && c <= 90) && c != pressedSticker.getMemo()) {
+                // if c is different from what it was previously, check if any conflicts
+                // are solved
+                ArrayList<Sticker> persistentConflicts = findStickerConflicts(pressedSticker);
+                // if there are more than 2 conflicts, others still remain conflicted
+                boolean conflictPersist = persistentConflicts.size() > 2;
+                for (Sticker sticker : persistentConflicts) {
+                    sticker.setConflicted(conflictPersist);
+                }
+
+                pressedSticker.setMemo(c);
+                saveMemoScheme();
+                // check for conflict stickers
+                ArrayList<Sticker> newConflicts = findStickerConflicts(pressedSticker);
+                // if this is the only sticker with the new memo, no new conflicts
+                boolean newConflict = newConflicts.size() > 1;
+                for (Sticker sticker : newConflicts) {
+                    sticker.setConflicted(newConflict);
+                }
+                repaint();
+            }
             turnOffEditMode(pressedSticker);
-            repaint();
         }
     }
 
