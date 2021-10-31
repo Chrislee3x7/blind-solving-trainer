@@ -9,6 +9,8 @@ public class SettingsPanel extends JPanel {
 
     private JButton loadDefaultMemosButton;
 
+    private JButton startButton;
+
     public SettingsPanel() {
         super();
         setOpaque(true);
@@ -42,6 +44,22 @@ public class SettingsPanel extends JPanel {
         });
     }
 
+    public ModeCycleJButton setUpSwitchMemoEditButton() {
+        toggleMemoEditModeButton = new ModeCycleJButton("Mode: Corners", "Mode: Edges");
+        toggleMemoEditModeButton.setPreferredSize(new Dimension(100, 80));
+        GridBagConstraints c = new GridBagConstraints();
+        c.gridy = 0;
+        c.weightx = 1;
+        c.weighty = 1;
+        c.insets = new Insets(0, 20,0, 20);
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.anchor = GridBagConstraints.CENTER;
+        add(toggleMemoEditModeButton, c);
+        Font font = new Font("Helvetica", Font.PLAIN, 20);
+        toggleMemoEditModeButton.setFont(font);
+        return toggleMemoEditModeButton;
+    }
+
     public JButton setUpLoadDefaultMemoSchemeButton() {
         loadDefaultMemosButton = new JButton("Load Default Memo Scheme");
         loadDefaultMemosButton.setPreferredSize(new Dimension(100, 80));
@@ -58,20 +76,20 @@ public class SettingsPanel extends JPanel {
         return loadDefaultMemosButton;
     }
 
-    public ModeCycleJButton setUpSwitchMemoEditButton() {
-        toggleMemoEditModeButton = new ModeCycleJButton("Mode: Corners", "Mode: Edges");
-        toggleMemoEditModeButton.setPreferredSize(new Dimension(100, 80));
+    public JButton setUpStartButton() {
+        startButton = new JButton("START");
+        startButton.setPreferredSize(new Dimension(100, 120));
         GridBagConstraints c = new GridBagConstraints();
-        c.gridy = 0;
+        c.gridy = 2;
         c.weightx = 1;
         c.weighty = 1;
         c.insets = new Insets(0, 20,0, 20);
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.CENTER;
-        add(toggleMemoEditModeButton, c);
-        Font font = new Font("Helvetica", Font.PLAIN, 20);
-        toggleMemoEditModeButton.setFont(font);
-        return toggleMemoEditModeButton;
+        add(startButton, c);
+        Font font = new Font("Helvetica", Font.PLAIN, 30);
+        startButton.setFont(font);
+        return startButton;
     }
 
     public void paintComponent(Graphics g) {

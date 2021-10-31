@@ -18,11 +18,16 @@ public class BlindSolvingTrainer {
     private CubeNetPanel cubeNetPanel;
     private ModeCycleJButton changeMemoEditModeButton;
     private JButton loadDefaultMemoSchemeButton;
+    private JButton startButton;
 
     public BlindSolvingTrainer() {
         cubeNetPanel = new CubeNetPanel();
         settingsPanel = new SettingsPanel();
         setUpFrame();
+        startMemoSetUpMode();
+    }
+
+    public void startMemoSetUpMode() {
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.BOTH;
         c.gridx = 0;
@@ -36,6 +41,10 @@ public class BlindSolvingTrainer {
         c.weightx = 1;
         c.weighty = 1;
         frame.add(settingsPanel, c);
+        setUpSettingsPanelButtons();
+    }
+
+    public void setUpSettingsPanelButtons() {
         cubeNetPanel.setBounds(frame.getBounds());
         changeMemoEditModeButton = settingsPanel.setUpSwitchMemoEditButton();
         cubeNetPanel.setMemoEditMode(changeMemoEditModeButton.getModeType());
@@ -49,6 +58,17 @@ public class BlindSolvingTrainer {
             cubeNetPanel.setMemoSchemeToDefault();
             cubeNetPanel.repaint();
         });
+        startButton = settingsPanel.setUpStartButton();
+        startButton.addActionListener(e -> {
+            System.out.println("Starting trainer");
+            closeMemoSetUpMode();
+            frame.repaint();
+        });
+    }
+
+    public void closeMemoSetUpMode() {
+        frame.remove(cubeNetPanel);
+        frame.remove(settingsPanel);
     }
 
     public static void main(String[] args) {
@@ -78,11 +98,11 @@ public class BlindSolvingTrainer {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setPreferredSize(new Dimension(1000, 700));
         frame.setUndecorated(false);
-        //frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        frame.pack();
 //        frame.getContentPane().add(cubeNetPanel);
-        frame.setMinimumSize(new Dimension(900, 600));
+        //frame.setMinimumSize(new Dimension(900, 600));
         frame.setResizable(true);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.pack();
         frame.setVisible(true);
     }
 }

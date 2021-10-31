@@ -223,6 +223,8 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
         int centerVertTopLeftCornerY = (panelDimension.height / 2) - (singleFaceDimension / 2); // centered for face 1
         int nextCubeFaceDistance = singleFaceDimension;
         paintFace(g, centerVertTopLeftCornerX + 1 * nextCubeFaceDistance, centerVertTopLeftCornerY - nextCubeFaceDistance, 0);
+        //hacky extra paintFace needed to fix the weird paint issue
+        paintFace(g, centerVertTopLeftCornerX + 1 * nextCubeFaceDistance, centerVertTopLeftCornerY - nextCubeFaceDistance, 0);
         paintFace(g, centerVertTopLeftCornerX, centerVertTopLeftCornerY, 1);
         paintFace(g, centerVertTopLeftCornerX + 1 * nextCubeFaceDistance, centerVertTopLeftCornerY, 2);
         paintFace(g, centerVertTopLeftCornerX + 2 * nextCubeFaceDistance, centerVertTopLeftCornerY, 3);
@@ -281,10 +283,6 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
             g.setColor(Color.BLACK);
             g.setFont(new Font("Helvetica", Font.PLAIN, singleStickerDimension / 2));
         }
-        g.drawRect(sticker.x + (singleStickerDimension - stickerBorderThickness) / 2
-                        - stringWidth / 2,
-                sticker.y + (singleStickerDimension - stickerBorderThickness) / 2
-                        + stringHeight / 2, stringWidth, stringHeight);
         g.drawString(memo, sticker.x + (singleStickerDimension - stickerBorderThickness) / 2
                         - stringWidth / 2,
                 sticker.y + (singleStickerDimension - stickerBorderThickness) / 2
