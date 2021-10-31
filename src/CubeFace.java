@@ -1,8 +1,8 @@
 import java.awt.*;
-import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 
 public class CubeFace extends Rectangle {
 
@@ -27,13 +27,6 @@ public class CubeFace extends Rectangle {
 
     private Color color;
 
-    public static final char[][] DEFAULT_MEMOS = new char[][]{
-            {'A', 'B', 'C', 'D'},
-            {'E', 'F', 'G', 'H'},
-            {'I', 'J', 'K', 'L'},
-            {'M', 'N', 'O', 'P'},
-            {'Q', 'R', 'S', 'T'},
-            {'U', 'V', 'W', 'X'}};
 
 //    // number of elements in stickers should be exactly 9
 //    public CubeFace(Sticker[] stickers) {
@@ -82,14 +75,16 @@ public class CubeFace extends Rectangle {
 
     public void setEdgeMemosToDefault(int faceIndex) {
         for (int i = 0; i < 4; i++) {
-            edgeStickers[i].setMemo(DEFAULT_MEMOS[faceIndex][i]);
+            edgeStickers[i].setMemo(CubeNetPanel.DEFAULT_MEMOS[faceIndex][i]);
+            edgeStickers[i].setConflicted(false);
         }
         updateAllStickersArray();
     }
 
     public void setCornerMemosToDefault(int faceIndex) {
         for (int i = 0; i < 4; i++) {
-            cornerStickers[i].setMemo(DEFAULT_MEMOS[faceIndex][i]);
+            cornerStickers[i].setMemo(CubeNetPanel.DEFAULT_MEMOS[faceIndex][i]);
+            cornerStickers[i].setConflicted(false);
         }
         updateAllStickersArray();
     }
@@ -98,7 +93,7 @@ public class CubeFace extends Rectangle {
      * Sets the memo for a specific edge sticker
      *
      * @param edgeIndex the index of the edge sticker (0 - 4)
-     * @param memo the single char memo
+     * @param memo      the single char memo
      */
     public void setEdgeMemo(int edgeIndex, char memo) {
         edgeStickers[edgeIndex].setMemo(memo);
@@ -109,7 +104,7 @@ public class CubeFace extends Rectangle {
      * Sets the memo for a specific corner sticker
      *
      * @param cornerIndex the index of the corner sticker (0 - 4)
-     * @param memo the single char memo
+     * @param memo        the single char memo
      */
     public void setCornerMemo(int cornerIndex, char memo) {
         cornerStickers[cornerIndex].setMemo(memo);
@@ -146,7 +141,7 @@ public class CubeFace extends Rectangle {
                 }
             }
         } else if (memoEditMode == StickerType.EDGE) {
-            for (Sticker sticker: edgeStickers) {
+            for (Sticker sticker : edgeStickers) {
                 if (sticker.contains(clickLoc)) {
                     return sticker;
                 }

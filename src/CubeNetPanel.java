@@ -2,7 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -31,6 +30,14 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
 
     private StickerType memoEditMode;
     private boolean editingMemo = false;
+
+    public static final char[][] DEFAULT_MEMOS = new char[][]{
+            {'A', 'B', 'C', 'D'},
+            {'E', 'F', 'G', 'H'},
+            {'I', 'J', 'K', 'L'},
+            {'M', 'N', 'O', 'P'},
+            {'Q', 'R', 'S', 'T'},
+            {'U', 'V', 'W', 'X'}};
 
     /**
      * Instantiates a CubeNetPanel object with default CubeFace colors
@@ -63,10 +70,27 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
     }
 
     public void setMemoSchemeToDefault() {
-        for (int i = 0; i < 6; i++) {
-            cubeFaces[i].setAllMemosToDefault(i);
-            cubeFaces[i].setAllMemosToDefault(i);
+        if (memoEditMode == StickerType.CORNER) {
+            setCornerMemoSchemeToDefault();
+        } else if (memoEditMode == StickerType.EDGE) {
+            setEdgeMemoSchemeToDefault();
         }
+    }
+
+    public void setEdgeMemoSchemeToDefault() {
+        for (int i = 0; i < 6; i++) {
+            cubeFaces[i].setEdgeMemosToDefault(i);
+        }
+        saveMemoScheme();
+        setMemoSchemeToSaved();
+    }
+
+    public void setCornerMemoSchemeToDefault() {
+        for (int i = 0; i < 6; i++) {
+            cubeFaces[i].setCornerMemosToDefault(i);
+        }
+        saveMemoScheme();
+        setMemoSchemeToSaved();
     }
 
     public void saveMemoScheme() {
@@ -83,7 +107,17 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
             Sticker[] edgeStickers = face.getEdgeStickers();
             for (int i = 0; i < cornerStickers.length; i++) {
                 pw.print(cornerStickers[i].getMemo());
+                if (cornerStickers[i].getConflicted()) {
+                    pw.print("1");
+                } else {
+                    pw.print("0");
+                }
                 pw.print(edgeStickers[i].getMemo());
+                if (edgeStickers[i].getConflicted()) {
+                    pw.print("1");
+                } else {
+                    pw.print("0");
+                }
             }
             pw.println();
         }
@@ -109,8 +143,18 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
         }
         for (CubeFace face : cubeFaces) {
             for (int i = 0; i < 4; i++) {
-                face.setCornerMemo(i, line.charAt(i * 2));
-                face.setEdgeMemo(i, line.charAt(i * 2 + 1));
+                face.setCornerMemo(i, line.charAt(i * 4));
+                if (line.charAt(i * 4 + 1) == '1') {
+                    face.getCornerStickers()[i].setConflicted(true);
+                } else {
+                    face.getCornerStickers()[i].setConflicted(false);
+                }
+                face.setEdgeMemo(i, line.charAt(i * 4 + 2));
+                if (line.charAt(i * 4 + 3) == '1') {
+                    face.getEdgeStickers()[i].setConflicted(true);
+                } else {
+                    face.getEdgeStickers()[i].setConflicted(false);
+                }
             }
             try {
                 line = bfr.readLine();
@@ -226,17 +270,21 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
         if (sticker.getStickerType() != memoEditMode) {
             return;
         }
-        Font font = new Font("Helvetica", Font.PLAIN, singleStickerDimension / 2);
-        g.setFont(font);
         FontMetrics fm = g.getFontMetrics();
         String memo = sticker.getMemo() + "";
         int stringWidth = fm.stringWidth(memo);
         int stringHeight = fm.getAscent();
         if (sticker.getConflicted()) {
-            g.setColor(Color.RED);
+            g.setColor(new Color(250, 94, 94));
+            g.setFont(new Font("Helvetica", Font.BOLD | Font.ITALIC, singleStickerDimension / 2));
         } else {
             g.setColor(Color.BLACK);
+            g.setFont(new Font("Helvetica", Font.PLAIN, singleStickerDimension / 2));
         }
+        g.drawRect(sticker.x + (singleStickerDimension - stickerBorderThickness) / 2
+                        - stringWidth / 2,
+                sticker.y + (singleStickerDimension - stickerBorderThickness) / 2
+                        + stringHeight / 2, stringWidth, stringHeight);
         g.drawString(memo, sticker.x + (singleStickerDimension - stickerBorderThickness) / 2
                         - stringWidth / 2,
                 sticker.y + (singleStickerDimension - stickerBorderThickness) / 2
@@ -352,7 +400,6 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
                 }
 
                 pressedSticker.setMemo(c);
-                saveMemoScheme();
                 // check for conflict stickers
                 ArrayList<Sticker> newConflicts = findStickerConflicts(pressedSticker);
                 // if this is the only sticker with the new memo, no new conflicts
@@ -360,6 +407,7 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
                 for (Sticker sticker : newConflicts) {
                     sticker.setConflicted(newConflict);
                 }
+                saveMemoScheme();
                 repaint();
             }
             turnOffEditMode(pressedSticker);

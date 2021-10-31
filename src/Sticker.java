@@ -11,7 +11,6 @@ public class Sticker extends Rectangle {
     // the letter corresponding to the memo for this sticker
     // '-' is representative of a blank/undecided memo letter
     private char memo;
-    private char previosMemo = '-';
 
     private StickerType stickerType;
 
@@ -74,15 +73,6 @@ public class Sticker extends Rectangle {
     }
 
     public void setMemo(char memo) {
-        setPreviosMemo(this.memo);
         this.memo = memo;
-    }
-
-    public char getPreviosMemo() {
-        return previosMemo;
-    }
-
-    public void setPreviosMemo(char previosMemo) {
-        this.previosMemo = previosMemo;
     }
 }

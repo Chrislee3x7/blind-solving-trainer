@@ -23,7 +23,6 @@ public class BlindSolvingTrainer {
         cubeNetPanel = new CubeNetPanel();
         settingsPanel = new SettingsPanel();
         setUpFrame();
-        cubeNetPanel.setBounds(frame.getBounds());
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.BOTH;
         c.gridx = 0;
@@ -37,6 +36,7 @@ public class BlindSolvingTrainer {
         c.weightx = 1;
         c.weighty = 1;
         frame.add(settingsPanel, c);
+        cubeNetPanel.setBounds(frame.getBounds());
         changeMemoEditModeButton = settingsPanel.setUpSwitchMemoEditButton();
         cubeNetPanel.setMemoEditMode(changeMemoEditModeButton.getModeType());
         changeMemoEditModeButton.addActionListener(e -> {
@@ -76,13 +76,13 @@ public class BlindSolvingTrainer {
         frame = new JFrame("Blind Solving Trainer");
         frame.setLayout(new GridBagLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        //frame.setPreferredSize(new Dimension(1000, 700));
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.setPreferredSize(new Dimension(1000, 700));
         frame.setUndecorated(false);
-//        frame.getContentPane().add(cubeNetPanel);
+        //frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.pack();
+//        frame.getContentPane().add(cubeNetPanel);
         frame.setMinimumSize(new Dimension(900, 600));
-        frame.setVisible(true);
         frame.setResizable(true);
+        frame.setVisible(true);
     }
 }
