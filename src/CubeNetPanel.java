@@ -45,7 +45,6 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
      */
     public CubeNetPanel() {
         super();
-        setOpaque(true);
         addMouseListener(this);
         addKeyListener(this);
         addFocusListener(new FocusListener() {
@@ -65,8 +64,14 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
         }
         setMemoSchemeToSaved();
         setMemoEditMode(StickerType.CORNER);
-        setFocusable(true);
-        requestFocusInWindow();
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                setOpaque(true);
+                setFocusable(true);
+                requestFocusInWindow();
+            }
+        });
     }
 
     public void setMemoSchemeToDefault() {
@@ -278,7 +283,7 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
         int stringHeight = fm.getAscent();
         if (sticker.getConflicted()) {
             g.setColor(new Color(250, 94, 94));
-            g.setFont(new Font("Helvetica", Font.BOLD | Font.ITALIC, singleStickerDimension / 2));
+            g.setFont(new Font("Helvetica", Font.BOLD, singleStickerDimension / 2));
         } else {
             g.setColor(Color.BLACK);
             g.setFont(new Font("Helvetica", Font.PLAIN, singleStickerDimension / 2));

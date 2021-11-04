@@ -20,11 +20,18 @@ public class BlindSolvingTrainer {
     private JButton loadDefaultMemoSchemeButton;
     private JButton startButton;
 
+    private TrainingPanel trainingPanel;
+
     public BlindSolvingTrainer() {
-        cubeNetPanel = new CubeNetPanel();
-        settingsPanel = new SettingsPanel();
-        setUpFrame();
-        startMemoSetUpMode();
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                cubeNetPanel = new CubeNetPanel();
+                settingsPanel = new SettingsPanel();
+                setUpFrame();
+                startMemoSetUpMode();
+            }
+        });
     }
 
     public void startMemoSetUpMode() {
@@ -62,6 +69,8 @@ public class BlindSolvingTrainer {
         startButton.addActionListener(e -> {
             System.out.println("Starting trainer");
             closeMemoSetUpMode();
+            trainingPanel = new TrainingPanel();
+            frame.add(trainingPanel);
             frame.repaint();
         });
     }
@@ -95,7 +104,7 @@ public class BlindSolvingTrainer {
     private void setUpFrame() {
         frame = new JFrame("Blind Solving Trainer");
         frame.setLayout(new GridBagLayout());
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setPreferredSize(new Dimension(1000, 700));
         frame.setUndecorated(false);
 //        frame.getContentPane().add(cubeNetPanel);
