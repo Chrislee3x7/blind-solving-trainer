@@ -134,25 +134,25 @@ public class CubeFace extends Rectangle {
     }
 
     public Sticker findClickedSticker(Point clickLoc) {
-        if (memoEditMode == StickerType.CORNER) {
-            for (Sticker sticker : cornerStickers) {
-                if (sticker.contains(clickLoc)) {
-                    return sticker;
-                }
-            }
-        } else if (memoEditMode == StickerType.EDGE) {
-            for (Sticker sticker : edgeStickers) {
-                if (sticker.contains(clickLoc)) {
-                    return sticker;
-                }
-            }
-        }
-        // search through all stickers
-//        for (Sticker sticker : allStickers) {
-//            if (sticker.contains(clickLoc)) {
-//                return sticker;
+//        if (memoEditMode == StickerType.CORNER) {
+//            for (Sticker sticker : cornerStickers) {
+//                if (sticker.contains(clickLoc)) {
+//                    return sticker;
+//                }
+//            }
+//        } else if (memoEditMode == StickerType.EDGE) {
+//            for (Sticker sticker : edgeStickers) {
+//                if (sticker.contains(clickLoc)) {
+//                    return sticker;
+//                }
 //            }
 //        }
+        // search through all stickers
+        for (Sticker sticker : allStickers) {
+            if (sticker.contains(clickLoc)) {
+                return sticker;
+            }
+        }
         return null;
     }
 
