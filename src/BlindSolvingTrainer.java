@@ -14,7 +14,10 @@ public class BlindSolvingTrainer {
 
     private static BlindSolvingTrainer blindSolvingTrainer;
     private JFrame frame;
-    //private SettingsPanel settingsPanel;
+    private SettingsPanel settingsPanel;
+    private CardLayout cardLayout;
+    private JPanel mainPanel;
+    private JPanel setMemosPanel;
     private CubeNetPanel cubeNetPanel;
     private ModeCycleJButton changeMemoEditModeButton;
 
@@ -24,119 +27,102 @@ public class BlindSolvingTrainer {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                cubeNetPanel = new CubeNetPanel();
-                //settingsPanel = new SettingsPanel();
-                trainingPanel = new TrainingPanel();
+                setUpPanels();
                 setUpFrame();
                 startMemoSetUpMode();
             }
         });
     }
 
+    public void setUpPanels() {
+        cardLayout = new CardLayout();
+        mainPanel = new JPanel(cardLayout);
+        cubeNetPanel = new CubeNetPanel();
+        settingsPanel = new SettingsPanel();
+        trainingPanel = new TrainingPanel(this);
+        trainingPanel.setName("TrainingPanel");
+        setMemosPanel = new JPanel(new GridBagLayout());
+        setMemosPanel.setName("SetMemosPanel");
+    }
+
+    public void changePanel(int i) {
+        switch (i) {
+            case 0:
+                setPanel(setMemosPanel);
+                break;
+            case 1:
+                setPanel(trainingPanel);
+                break;
+            default:
+
+        }
+    }
+
+    public void setPanel(JPanel panel) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("trying to show a panel of name: " + panel.getName());
+                cardLayout.show(mainPanel, panel.getName());
+//                cardLayout.next(mainPanel);
+//                cardLayout.first(mainPanel);
+                panel.requestFocus();
+            }
+        });
+    }
+
     public void startMemoSetUpMode() {
-        CardLayout cardLayout = new CardLayout();
-        JPanel mainPanel = new JPanel(cardLayout);
+
         GridBagConstraints c = new GridBagConstraints();
-        JPanel setMemosPanel = new JPanel();
 
-        frame.setBackground(Color.black);
-        System.out.println(frame.getBounds());
-        cubeNetPanel.setPreferredSize(frame.getSize());
-        frame.add(cubeNetPanel);
-        System.out.println(cubeNetPanel.getBounds());
+        //cubeNetPanel.setPreferredSize(frame.getSize());
 
-//        c.fill = GridBagConstraints.BOTH;
-//        c.gridx = 0;
-//        c.gridy = 0;
-//        c.weightx = 5;
-//        c.weighty = 1;
-//        setMemosPanel.add(cubeNetPanel, c);
-//
-//        c.gridx = 1;
-//        c.gridy = 0;
-//        c.weightx = 1;
-//        c.weighty = 1;
-//        //setMemosPanel.add(settingsPanel, c);
-//
-//        //setUpSettingsPanelButtons();
-//
-//        c.gridx = 0;
-//        c.gridy = 0;
-//        c.weightx = 1;
-//        c.weighty = 1;
-//        mainPanel.add(setMemosPanel);
-//        c.gridx = 0;
-//        c.gridy = 0;
-//        c.weightx = 1;
-//        c.weighty = 1;
-        //mainPanel.add(trainingPanel);
-        //frame.add(mainPanel);
-        //cardLayout.next(mainPanel);
+        c.fill = GridBagConstraints.BOTH;
+        c.gridx = 0;
+        c.gridy = 0;
+        c.weightx = 10;
+        c.weighty = 10;
+        setMemosPanel.add(cubeNetPanel, c);
+
+        setUpSettingsPanelButtons();
+        c.gridx = 0;
+        c.gridy = 1;
+        c.weightx = 0;
+        c.weighty = 1;
+        setMemosPanel.add(settingsPanel, c);
+        setMemosPanel.setPreferredSize(frame.getMaximumSize());
+        setMemosPanel.setMinimumSize(frame.getMinimumSize());
+
+        mainPanel.setPreferredSize(frame.getMaximumSize());
+        mainPanel.setBorder(BorderFactory.createLineBorder(Color.red));
+
+        mainPanel.add(setMemosPanel, setMemosPanel.getName());
+        mainPanel.add(trainingPanel, trainingPanel.getName());
+
+        frame.add(mainPanel);
     }
 
     public void setUpSettingsPanelButtons() {
-//        changeMemoEditModeButton = settingsPanel.setUpSwitchMemoEditButton();
-//        cubeNetPanel.setMemoEditMode(changeMemoEditModeButton.getModeType());
-//        changeMemoEditModeButton.addActionListener(e -> {
-//            changeMemoEditModeButton.cycleMode();
-//            cubeNetPanel.setMemoEditMode(changeMemoEditModeButton.getModeType());
-//            cubeNetPanel.repaint();
-//        });
-//        JButton loadDefaultMemoSchemeButton = settingsPanel.setUpLoadDefaultMemoSchemeButton();
-//        loadDefaultMemoSchemeButton.addActionListener(e -> {
-//            cubeNetPanel.setMemoSchemeToDefault();
-//            cubeNetPanel.repaint();
-//        });
-//        JButton startButton = settingsPanel.setUpStartButton();
-//        startButton.addActionListener(e -> {
-//            closeMemoSetUpMode();
-//            setUpTrainingMode();
-//        });
-    }
-
-    public void setUpTrainingMode() {
-        System.out.println("Starting trainer");
-        GridBagConstraints c = new GridBagConstraints();
-        c.fill = GridBagConstraints.BOTH;
-//        c.gridx = 0;
-//        c.gridy = 0;
-//        c.weightx = 1;
-//        c.weighty = 1;
-//        frame.add(trainingPanel);
-//        trainingPanel.setPreferredSize(new Dimension(100,100));
-        c.gridx = 0;
-        c.gridy = 0;
-        c.weightx = 1;
-        c.weighty = 1;
-        frame.add(trainingPanel, c);
-        trainingPanel.repaint();
-    }
-
-    public void closeMemoSetUpMode() {
-        frame.remove(cubeNetPanel);
-        //frame.remove(settingsPanel);
-        frame.repaint();
+        changeMemoEditModeButton = settingsPanel.setUpSwitchMemoEditButton();
+        cubeNetPanel.setMemoEditMode(changeMemoEditModeButton.getModeType());
+        changeMemoEditModeButton.addActionListener(e -> {
+            changeMemoEditModeButton.cycleMode();
+            cubeNetPanel.setMemoEditMode(changeMemoEditModeButton.getModeType());
+            cubeNetPanel.repaint();
+        });
+        JButton loadDefaultMemoSchemeButton = settingsPanel.setUpLoadDefaultMemoSchemeButton();
+        loadDefaultMemoSchemeButton.addActionListener(e -> {
+            cubeNetPanel.setMemoSchemeToDefault();
+            cubeNetPanel.repaint();
+        });
+        JButton startButton = settingsPanel.setUpStartButton();
+        startButton.addActionListener(e -> {
+            changePanel(1);
+        });
     }
 
     public static void main(String[] args) {
         blindSolvingTrainer = new BlindSolvingTrainer();
-    }
-
-    public void expandSettingsPanel() {
-        GridBagConstraints c = new GridBagConstraints();
-        c.gridx = 1;
-        c.gridy = 0;
-        c.weightx = 1;
-        c.weighty = 1;
-//        frame.add(settingsPanel, c);
-//        settingsPanel.setUpSwitchMemoEditButton();
-    }
-
-    public void minimizeSettingsPanel() {
-        GridBagConstraints c = new GridBagConstraints();
-        c.weightx = 0;
-        c.weighty = 1;
-        //frame.remove(settingsPanel);
     }
 
     private void setUpFrame() {
@@ -145,9 +131,9 @@ public class BlindSolvingTrainer {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setPreferredSize(new Dimension(1000, 700));
         frame.setUndecorated(false);
-        frame.setMinimumSize(new Dimension(900, 600));
+        frame.setMinimumSize(new Dimension(1000, 700));
         frame.setResizable(true);
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        //frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setLocationRelativeTo(null);
         frame.pack();
         frame.setVisible(true);

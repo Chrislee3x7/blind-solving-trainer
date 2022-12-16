@@ -51,17 +51,17 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
         super();
         addMouseListener(this);
         addKeyListener(this);
-//        addFocusListener(new FocusListener() {
-//            @Override
-//            public void focusGained(FocusEvent e) {
-//
-//            }
-//
-//            @Override
-//            public void focusLost(FocusEvent e) {
-//                turnOffEditMode(selectedSticker);
-//            }
-//        });
+        addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                turnOffEditMode(editingSticker);
+            }
+        });
         cubeFaces = new CubeFace[6];
         for (int i = 0; i < 6; i++) {
             cubeFaces[i] = new CubeFace(defaultColorScheme[i]);
@@ -87,6 +87,13 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
     }
 
     public void setEdgeMemoSchemeToDefault() {
+        int result = JOptionPane.showConfirmDialog(this,
+                "Are you sure you want to reset the edge memo scheme to Default?\nYou will lose " +
+                        "the current edge memo scheme", "Blind Solving Trainer",
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+        if (result == JOptionPane.CANCEL_OPTION) {
+            return;
+        }
         for (int i = 0; i < 6; i++) {
             cubeFaces[i].setEdgeMemosToDefault(i);
         }
@@ -95,6 +102,13 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
     }
 
     public void setCornerMemoSchemeToDefault() {
+        int result = JOptionPane.showConfirmDialog(this,
+                "Are you sure you want to reset the corner memo scheme to Default?\nYou will lose " +
+                        "the current corner memo scheme", "Blind Solving Trainer",
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+        if (result == JOptionPane.CANCEL_OPTION) {
+            return;
+        }
         for (int i = 0; i < 6; i++) {
             cubeFaces[i].setCornerMemosToDefault(i);
         }
@@ -225,6 +239,7 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
     }
 
     private void paintCubeNet(Graphics g) {
+        System.out.println(panelDimension);
         int centerVertTopLeftCornerX = (panelDimension.width / 2) - (singleFaceDimension * 2); // centered for face 1
         int centerVertTopLeftCornerY = (panelDimension.height / 2) - (singleFaceDimension / 2); // centered for face 1
         int nextCubeFaceDistance = singleFaceDimension;

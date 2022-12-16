@@ -29,7 +29,7 @@ public class SettingsPanel extends JPanel {
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                requestFocus();
+                //requestFocus();
             }
 
             @Override
@@ -48,10 +48,10 @@ public class SettingsPanel extends JPanel {
         toggleMemoEditModeButton = new ModeCycleJButton("Mode: Corners", "Mode: Edges");
         toggleMemoEditModeButton.setPreferredSize(new Dimension(100, 80));
         GridBagConstraints c = new GridBagConstraints();
-        c.gridy = 0;
+        c.gridx = 0;
         c.weightx = 1;
         c.weighty = 1;
-        c.insets = new Insets(0, 20,0, 20);
+        c.insets = new Insets(10, 20,10, 20);
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.CENTER;
         add(toggleMemoEditModeButton, c);
@@ -64,10 +64,10 @@ public class SettingsPanel extends JPanel {
         loadDefaultMemosButton = new JButton("Load Default Memo Scheme");
         loadDefaultMemosButton.setPreferredSize(new Dimension(100, 80));
         GridBagConstraints c = new GridBagConstraints();
-        c.gridy = 1;
+        c.gridx = 1;
         c.weightx = 1;
         c.weighty = 1;
-        c.insets = new Insets(0, 20,0, 20);
+        c.insets = new Insets(10, 20,10, 20);
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.CENTER;
         add(loadDefaultMemosButton, c);
@@ -78,12 +78,12 @@ public class SettingsPanel extends JPanel {
 
     public JButton setUpStartButton() {
         startButton = new JButton("START");
-        startButton.setPreferredSize(new Dimension(100, 120));
+        startButton.setPreferredSize(new Dimension(100, 80));
         GridBagConstraints c = new GridBagConstraints();
-        c.gridy = 2;
+        c.gridx = 2;
         c.weightx = 1;
         c.weighty = 1;
-        c.insets = new Insets(0, 20,0, 20);
+        c.insets = new Insets(10, 20,10, 20);
         c.fill = GridBagConstraints.HORIZONTAL;
         c.anchor = GridBagConstraints.CENTER;
         add(startButton, c);
