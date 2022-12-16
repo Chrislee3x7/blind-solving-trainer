@@ -196,7 +196,7 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
         singleStickerDimension = singleFaceDimension / 3;
         stickerBorderThickness = singleFaceDimension / 30;
         singleFaceDimension = (3 * singleStickerDimension + 3 * stickerBorderThickness);
-        System.out.println("sfd: " + singleFaceDimension);
+        //System.out.println("sfd: " + singleFaceDimension);
     }
 
     public void setFaceColor(int faceIndex, Color color) {
@@ -241,7 +241,7 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
     }
 
     private void paintCubeNet(Graphics g) {
-        System.out.println(panelDimension);
+        //System.out.println(panelDimension);
         int centerVertTopLeftCornerX = (panelDimension.width / 2) - (singleFaceDimension * 2); // centered for face 1
         int centerVertTopLeftCornerY = (panelDimension.height / 2) - (singleFaceDimension / 2); // centered for face 1
         int nextCubeFaceDistance = singleFaceDimension;

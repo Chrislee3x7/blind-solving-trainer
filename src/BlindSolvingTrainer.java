@@ -80,8 +80,8 @@ public class BlindSolvingTrainer {
         c.fill = GridBagConstraints.BOTH;
         c.gridx = 0;
         c.gridy = 0;
-        c.weightx = 6;
-        c.weighty = 6;
+        c.weightx = 10;
+        c.weighty = 10;
         setMemosPanel.add(cubeNetPanel, c);
 
         setUpSettingsPanelButtons();
@@ -91,19 +91,19 @@ public class BlindSolvingTrainer {
         c.weighty = 1;
         setMemosPanel.add(settingsPanel, c);
 
-        setMemosPanel.setPreferredSize(new Dimension(900, 600));
+        //setMemosPanel.setPreferredSize(new Dimension(900, 600));
         //setMemosPanel.setMinimumSize(frame.getMinimumSize());
 
-        settingsPanel.setBorder(BorderFactory.createLineBorder(Color.green));
+        //settingsPanel.setBorder(BorderFactory.createLineBorder(Color.green));
 
-        mainPanel.setPreferredSize(frame.getPreferredSize());
-        mainPanel.setMinimumSize(frame.getMinimumSize());
-        mainPanel.setBorder(BorderFactory.createLineBorder(Color.red));
+        mainPanel.setPreferredSize(new Dimension(frame.getContentPane().getWidth(), frame.getContentPane().getHeight()));
+        //mainPanel.setMinimumSize(new Dimension(frame.getContentPane().getWidth(), frame.getContentPane().getHeight()));
+        //mainPanel.setBorder(BorderFactory.createLineBorder(Color.red));
 
         mainPanel.add(setMemosPanel, setMemosPanel.getName());
         mainPanel.add(trainingPanel, trainingPanel.getName());
 
-        frame.add(mainPanel);
+        frame.getContentPane().add(mainPanel);
     }
 
     public void setUpSettingsPanelButtons() {
@@ -133,9 +133,9 @@ public class BlindSolvingTrainer {
         frame = new JFrame("Blind Solving Trainer");
         frame.setLayout(new GridBagLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setPreferredSize(new Dimension(1000, 700));
+        frame.getContentPane().setPreferredSize(new Dimension(1000, 700));
         frame.setUndecorated(false);
-        frame.setMinimumSize(new Dimension(1000, 700));
+        frame.getContentPane().setMinimumSize(new Dimension(1000, 700));
         frame.setResizable(true);
         //frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setLocationRelativeTo(null);
