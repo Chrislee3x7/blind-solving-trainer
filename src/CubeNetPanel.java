@@ -26,7 +26,9 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
     private int stickerBorderThickness;
 
     // for mouseListener
-    private Sticker selectedSticker;
+    private Sticker editingSticker;
+    // for mouseListener to help with press and release comparison
+    private Sticker pressedSticker;
 
     private StickerType memoEditMode;
     private boolean editingMemo = false;
@@ -38,6 +40,8 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
             {'M', 'N', 'O', 'P'},
             {'Q', 'R', 'S', 'T'},
             {'U', 'V', 'W', 'X'}};
+
+    private ScheduledExecutorService stickerBlinkExecutorService;
 
     /**
      * Instantiates a CubeNetPanel object with default CubeFace colors
@@ -185,10 +189,6 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
 
     public void setMemoEditMode(StickerType memoEditMode) {
         this.memoEditMode = memoEditMode;
-        // shit code
-//        for (CubeFace face : cubeFaces) {
-//            face.setMemoEditMode(memoEditMode);
-//        }
     }
 
     public ArrayList<Sticker> findStickerConflicts(Sticker possibleConflict) {
@@ -296,33 +296,57 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
     }
 
     public void turnOffEditMode(Sticker sticker) {
-        if (sticker != null) {
-            sticker.setDisplayColor(sticker.getTrueColor());
-            sticker.turnOffEditMode();
-            //System.out.println("turned off edit mode");
-            editingMemo = false;
-            selectedSticker = null;
+        if (sticker == null) {
+            return;
         }
+        stickerBlinkExecutorService.shutdownNow();
+        sticker.setEditModeOff();
+        sticker.setDisplayColor(sticker.getTrueColor());
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                repaint();
+            }});
+        //System.out.println("turned off edit mode");
+        editingMemo = false;
+        editingSticker = null;
+    }
+
+    public void turnOnEditMode(Sticker sticker) {
+        if (sticker == null) {
+            return;
+        }
+        editingMemo = true;
+        sticker.setEditModeOn();
+        stickerBlinkExecutorService = Executors.newSingleThreadScheduledExecutor();
+        stickerBlinkExecutorService.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                if (editingSticker.getDisplayColor() == editingSticker.getTrueColor()) {
+                    editingSticker.setDisplayColor(Sticker.BLINK_COLOR);
+                }
+                else {
+                    editingSticker.setDisplayColor(editingSticker.getTrueColor());
+                }
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        repaint();
+                    }});
+            }
+        }, 0, 500, TimeUnit.MILLISECONDS);
+
     }
 
     // MouseListener methods
     @Override
     public void mouseClicked(MouseEvent e) {
     }
-    int counter = 0;
+
     @Override
     public void mousePressed(MouseEvent e) {
         requestFocus();
-        // no matter what, if there was a selected sticker before this click, it should no longer be selected
-        if (selectedSticker != null) {
-            selectedSticker.turnOffEditMode();
-            selectedSticker = null;
-            return;
-        }
 
         Point clickLoc = MouseInfo.getPointerInfo().getLocation();
         SwingUtilities.convertPointFromScreen(clickLoc, this);
-        Sticker clickedSticker;
 
         for (CubeFace face : cubeFaces) {
             if (!face.contains(clickLoc)) {
@@ -330,62 +354,36 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
                 continue;
             }
             // otherwise get the sticker for this click loc
-            clickedSticker = face.findClickedSticker(clickLoc);
-            if (clickedSticker == null || clickedSticker.getStickerType() != memoEditMode) {
-                // if sticker is not one of the available stickers to edit...
-                System.out.println("Sticker is null or wrong type");
-            }
-            // if clickedSticker is not null and the stickerType matches the memoEditMode
-            selectedSticker = clickedSticker;
-            selectedSticker.turnOnEditMode();
+            pressedSticker = face.findClickedSticker(clickLoc);
             return;
-
         }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
+        // no matter what, if there was a selected sticker before this click, it should no longer be selected
+        if (editingSticker != null) {
+            turnOffEditMode(editingSticker);
+            System.out.println("edit mode turned off");
+            return;
+        }
+
         Point clickLoc = MouseInfo.getPointerInfo().getLocation();
         SwingUtilities.convertPointFromScreen(clickLoc, this);
-        Sticker clickedSticker;
-
-
-
-
-
-//        for (CubeFace face : cubeFaces) {
-//            if (!face.contains(clickLoc)) {
-//                continue;
-//            }
-//            clickedSticker = face.findClickedSticker(clickLoc);
-//            if (clickedSticker == null || clickedSticker != selectedSticker) {
-//                return;
-//            }
-//            clickedSticker.turnOnEditMode();
-//            editingMemo = true;
-//            final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-//            executorService.scheduleAtFixedRate(new Runnable() {
-//                @Override
-//                public void run() {
-//                    //System.out.println("change now" + changeCount++);
-//
-//                    if (clickedSticker.getDisplayColor() == clickedSticker.getTrueColor()) {
-//                        clickedSticker.setDisplayColor(Sticker.BLINK_COLOR);
-//                    } else {
-//                        clickedSticker.setDisplayColor(clickedSticker.getTrueColor());
-//                    }
-//                    repaint();
-//                    if (!clickedSticker.getEditModeOn()) {
-//                        turnOffEditMode(clickedSticker);
-//                        repaint();
-//                        executorService.shutdownNow();
-//                    }
-//                }
-//            }, 0, 500, TimeUnit.MILLISECONDS);
-//            //clickedSticker.setColor(Color.CYAN);
-//
-//            return;
-//        }
+        Sticker releasedSticker;
+            for (CubeFace face : cubeFaces) {
+                if (!face.contains(clickLoc)) {
+                    continue;
+                }
+                releasedSticker = face.findClickedSticker(clickLoc);
+                if (editingSticker == null && releasedSticker != null && releasedSticker == pressedSticker && pressedSticker.getStickerType() == memoEditMode) {
+                    // if clickedSticker is not null and the stickerType matches the memoEditMode
+                    editingSticker = releasedSticker;
+                    pressedSticker = null;
+                    turnOnEditMode(editingSticker);
+                }
+            }
+            //clickedSticker.setColor(Color.CYAN);
     }
 
     @Override
@@ -405,19 +403,19 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
             String s = e.getKeyChar() + "";
             s = s.toUpperCase();
             char c = s.charAt(0);
-            if ((c >= 65 && c <= 90) && c != selectedSticker.getMemo()) {
+            if ((c >= 65 && c <= 90) && c != editingSticker.getMemo()) {
                 // if c is different from what it was previously, check if any conflicts
                 // are solved
-                ArrayList<Sticker> persistentConflicts = findStickerConflicts(selectedSticker);
+                ArrayList<Sticker> persistentConflicts = findStickerConflicts(editingSticker);
                 // if there are more than 2 conflicts, others still remain conflicted
                 boolean conflictPersist = persistentConflicts.size() > 2;
                 for (Sticker sticker : persistentConflicts) {
                     sticker.setConflicted(conflictPersist);
                 }
 
-                selectedSticker.setMemo(c);
+                editingSticker.setMemo(c);
                 // check for conflict stickers
-                ArrayList<Sticker> newConflicts = findStickerConflicts(selectedSticker);
+                ArrayList<Sticker> newConflicts = findStickerConflicts(editingSticker);
                 // if this is the only sticker with the new memo, no new conflicts
                 boolean newConflict = newConflicts.size() > 1;
                 for (Sticker sticker : newConflicts) {
@@ -426,7 +424,7 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
                 saveMemoScheme();
                 repaint();
             }
-            turnOffEditMode(selectedSticker);
+            turnOffEditMode(editingSticker);
         }
     }
 

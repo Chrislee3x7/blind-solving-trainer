@@ -36,11 +36,11 @@ public class Sticker extends Rectangle {
         return conflicted;
     }
 
-    public void turnOnEditMode() {
+    public void setEditModeOn() {
         editModeOn = true;
     }
 
-    public void turnOffEditMode() {
+    public void setEditModeOff() {
         editModeOn = false;
     }
 

@@ -142,7 +142,7 @@ public class BlindSolvingTrainer {
     private void setUpFrame() {
         frame = new JFrame("Blind Solving Trainer");
         frame.setLayout(new GridBagLayout());
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setPreferredSize(new Dimension(1000, 700));
         frame.setUndecorated(false);
         frame.setMinimumSize(new Dimension(900, 600));
