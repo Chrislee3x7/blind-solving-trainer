@@ -30,6 +30,7 @@ public class BlindSolvingTrainer {
                 setUpPanels();
                 setUpFrame();
                 startMemoSetUpMode();
+                frame.pack();
             }
         });
     }
@@ -83,6 +84,7 @@ public class BlindSolvingTrainer {
         c.weightx = 10;
         c.weighty = 10;
         setMemosPanel.add(cubeNetPanel, c);
+        setMemosPanel.setBackground(new Color(175, 208, 191));
 
         setUpSettingsPanelButtons();
         c.gridx = 0;
@@ -97,7 +99,7 @@ public class BlindSolvingTrainer {
         //settingsPanel.setBorder(BorderFactory.createLineBorder(Color.green));
 
         mainPanel.setPreferredSize(new Dimension(frame.getContentPane().getWidth(), frame.getContentPane().getHeight()));
-        //mainPanel.setMinimumSize(new Dimension(frame.getContentPane().getWidth(), frame.getContentPane().getHeight()));
+        mainPanel.setMinimumSize(new Dimension(frame.getContentPane().getWidth(), frame.getContentPane().getHeight()));
         //mainPanel.setBorder(BorderFactory.createLineBorder(Color.red));
 
         mainPanel.add(setMemosPanel, setMemosPanel.getName());
@@ -133,10 +135,11 @@ public class BlindSolvingTrainer {
         frame = new JFrame("Blind Solving Trainer");
         frame.setLayout(new GridBagLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.getContentPane().setPreferredSize(new Dimension(1000, 700));
+        frame.setPreferredSize(new Dimension(1000, 700));
         frame.setUndecorated(false);
-        frame.getContentPane().setMinimumSize(new Dimension(1000, 700));
+        frame.setMinimumSize(new Dimension(1000, 700));
         frame.setResizable(true);
+        frame.getContentPane().setBackground(new Color(175, 208, 191));
         //frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setLocationRelativeTo(null);
         frame.pack();
