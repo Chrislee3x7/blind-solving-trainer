@@ -75,7 +75,7 @@ public class CubeFace extends Rectangle {
 
     public void setEdgeMemosToDefault(int faceIndex) {
         for (int i = 0; i < 4; i++) {
-            edgeStickers[i].setMemo(CubeNetPanel.DEFAULT_MEMOS[faceIndex][i]);
+            edgeStickers[i].setMemo(Cube.DEFAULT_MEMOS[faceIndex][i]);
             edgeStickers[i].setConflicted(false);
         }
         updateAllStickersArray();
@@ -83,7 +83,7 @@ public class CubeFace extends Rectangle {
 
     public void setCornerMemosToDefault(int faceIndex) {
         for (int i = 0; i < 4; i++) {
-            cornerStickers[i].setMemo(CubeNetPanel.DEFAULT_MEMOS[faceIndex][i]);
+            cornerStickers[i].setMemo(Cube.DEFAULT_MEMOS[faceIndex][i]);
             cornerStickers[i].setConflicted(false);
         }
         updateAllStickersArray();
