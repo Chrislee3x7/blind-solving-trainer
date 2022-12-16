@@ -190,11 +190,13 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
     public void updatePanelDimension() {
         panelDimension = getSize();
         singleFaceDimension = panelDimension.width / 5;
-        if (panelDimension.height / 3.5 < singleFaceDimension) {
-            singleFaceDimension = (int) (panelDimension.height / 3.5);
+        if (panelDimension.height / 4 < singleFaceDimension) {
+            singleFaceDimension = (int) (panelDimension.height / 4);
         }
         singleStickerDimension = singleFaceDimension / 3;
         stickerBorderThickness = singleFaceDimension / 30;
+        singleFaceDimension = (3 * singleStickerDimension + 3 * stickerBorderThickness);
+        System.out.println("sfd: " + singleFaceDimension);
     }
 
     public void setFaceColor(int faceIndex, Color color) {
@@ -261,6 +263,8 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
                 singleFaceDimension + stickerBorderThickness,
                 singleFaceDimension + stickerBorderThickness);
         g.fillRect(cubeFace.x, cubeFace.y, cubeFace.width, cubeFace.height);
+        g.setColor(Color.magenta);
+        //g.drawRect(cubeFace.x, cubeFace.y, cubeFace.width, cubeFace.height);
         for(int i = 0; i < 9; i++) {
             Sticker sticker = cubeFace.getSticker(i);
             int stickerStartX = faceStartX + ((i % 3) * singleFaceDimension / 3);
@@ -283,8 +287,8 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
 //        sticker.setSize(singleStickerDimension - stickerBorderThickness, singleStickerDimension - stickerBorderThickness);
 
         sticker.setBounds(stickerStartX + stickerBorderThickness, stickerStartY + stickerBorderThickness,
-                singleFaceDimension / 3 - stickerBorderThickness,
-                singleFaceDimension / 3 - stickerBorderThickness);
+                (singleFaceDimension - (3 * stickerBorderThickness )) / 3,
+                (singleFaceDimension  - (3 * stickerBorderThickness)) / 3);
         g.fillRect(sticker.x, sticker.y, sticker.width, sticker.height);
         paintMemo(g, sticker);
     }
@@ -304,9 +308,9 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
             g.setColor(Color.BLACK);
             g.setFont(new Font("Helvetica", Font.PLAIN, singleStickerDimension / 2));
         }
-        g.drawString(memo, sticker.x + (singleStickerDimension - stickerBorderThickness) / 2
+        g.drawString(memo, sticker.x + (singleStickerDimension) / 2
                         - stringWidth / 2,
-                sticker.y + (singleStickerDimension - stickerBorderThickness) / 2
+                sticker.y + (singleStickerDimension) / 2
                         + stringHeight / 2);
     }
 

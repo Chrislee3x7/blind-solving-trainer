@@ -80,8 +80,8 @@ public class BlindSolvingTrainer {
         c.fill = GridBagConstraints.BOTH;
         c.gridx = 0;
         c.gridy = 0;
-        c.weightx = 10;
-        c.weighty = 10;
+        c.weightx = 6;
+        c.weighty = 6;
         setMemosPanel.add(cubeNetPanel, c);
 
         setUpSettingsPanelButtons();
@@ -90,10 +90,14 @@ public class BlindSolvingTrainer {
         c.weightx = 0;
         c.weighty = 1;
         setMemosPanel.add(settingsPanel, c);
-        setMemosPanel.setPreferredSize(frame.getMaximumSize());
-        setMemosPanel.setMinimumSize(frame.getMinimumSize());
 
-        mainPanel.setPreferredSize(frame.getMaximumSize());
+        setMemosPanel.setPreferredSize(new Dimension(900, 600));
+        //setMemosPanel.setMinimumSize(frame.getMinimumSize());
+
+        settingsPanel.setBorder(BorderFactory.createLineBorder(Color.green));
+
+        mainPanel.setPreferredSize(frame.getPreferredSize());
+        mainPanel.setMinimumSize(frame.getMinimumSize());
         mainPanel.setBorder(BorderFactory.createLineBorder(Color.red));
 
         mainPanel.add(setMemosPanel, setMemosPanel.getName());
