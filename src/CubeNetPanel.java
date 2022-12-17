@@ -57,7 +57,6 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
             }
         });
 
-        setMemoSchemeToSaved();
         setMemoEditMode(StickerType.CORNER);
         SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -86,8 +85,8 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
             return;
         }
         cube.resetEdgeMemos();
-        saveMemoScheme();
-        setMemoSchemeToSaved();
+        cube.saveMemoScheme();
+        cube.loadMemoScheme();
     }
 
     public void setCornerMemoSchemeToDefault() {
@@ -99,79 +98,8 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
             return;
         }
         cube.resetCornerMemos();
-        saveMemoScheme();
-        setMemoSchemeToSaved();
-    }
-
-    public void saveMemoScheme() {
-        File f = new File("src/Memos");
-        PrintWriter pw;
-        try {
-            pw = new PrintWriter(f);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return;
-        }
-        for (CubeFace face : cube.getCubeFaces()) {
-            Sticker[] cornerStickers = face.getCornerStickers();
-            Sticker[] edgeStickers = face.getEdgeStickers();
-            for (int i = 0; i < cornerStickers.length; i++) {
-                pw.print(cornerStickers[i].getMemo());
-                if (cornerStickers[i].getConflicted()) {
-                    pw.print("1");
-                } else {
-                    pw.print("0");
-                }
-                pw.print(edgeStickers[i].getMemo());
-                if (edgeStickers[i].getConflicted()) {
-                    pw.print("1");
-                } else {
-                    pw.print("0");
-                }
-            }
-            pw.println();
-        }
-        pw.close();
-    }
-
-    public void setMemoSchemeToSaved() {
-        BufferedReader bfr = null;
-        try {
-            bfr = new BufferedReader(new FileReader("src/Memos"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        String line;
-        try {
-            line = bfr.readLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
-        if (line == null) {
-            return;
-        }
-        for (CubeFace face : cube.getCubeFaces()) {
-            for (int i = 0; i < 4; i++) {
-                face.setCornerMemo(i, line.charAt(i * 4));
-                if (line.charAt(i * 4 + 1) == '1') {
-                    face.getCornerStickers()[i].setConflicted(true);
-                } else {
-                    face.getCornerStickers()[i].setConflicted(false);
-                }
-                face.setEdgeMemo(i, line.charAt(i * 4 + 2));
-                if (line.charAt(i * 4 + 3) == '1') {
-                    face.getEdgeStickers()[i].setConflicted(true);
-                } else {
-                    face.getEdgeStickers()[i].setConflicted(false);
-                }
-            }
-            try {
-                line = bfr.readLine();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        cube.saveMemoScheme();
+        cube.loadMemoScheme();
     }
 
     public void updatePanelDimension() {
@@ -399,7 +327,7 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
                 for (Sticker sticker : newConflicts) {
                     sticker.setConflicted(newConflict);
                 }
-                saveMemoScheme();
+                cube.saveMemoScheme();
                 repaint();
             }
             turnOffEditMode(editingSticker);

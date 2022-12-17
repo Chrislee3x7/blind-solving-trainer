@@ -75,4 +75,9 @@ public class Sticker extends Rectangle {
     public void setMemo(char memo) {
         this.memo = memo;
     }
+
+    @Override
+    public String toString() {
+        return memo + "";
+    }
 }

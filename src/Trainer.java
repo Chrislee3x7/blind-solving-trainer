@@ -29,6 +29,9 @@ public class Trainer {
             new Exception("Invalid training mode inputted").printStackTrace();
         }
         this.mode = mode;
+
+        // create all pieces based on the memo scheme
+
     }
 
     private void startTraining() {
