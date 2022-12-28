@@ -1,8 +1,4 @@
 import java.awt.*;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintWriter;
 
 public class CubeFace extends Rectangle {
 
@@ -23,7 +19,7 @@ public class CubeFace extends Rectangle {
     // | 6 7 8 |
     private Sticker[] allStickers;
 
-    private StickerType memoEditMode;
+    private PieceType memoEditMode;
 
     private Color color;
 
@@ -41,8 +37,8 @@ public class CubeFace extends Rectangle {
         cornerStickers = new Sticker[4];
         edgeStickers = new Sticker[4];
         for (int i = 0; i < 4; i++) {
-            cornerStickers[i] = new Sticker(color, '-', StickerType.CORNER);
-            edgeStickers[i] = new Sticker(color, '-', StickerType.EDGE);
+            cornerStickers[i] = new Sticker(color, '-', PieceType.CORNER);
+            edgeStickers[i] = new Sticker(color, '-', PieceType.EDGE);
         }
         updateAllStickersArray();
     }
@@ -57,7 +53,7 @@ public class CubeFace extends Rectangle {
 
     public void updateAllStickersArray() {
         allStickers = new Sticker[]{cornerStickers[0], edgeStickers[0], cornerStickers[1], edgeStickers[3],
-                new Sticker(color, '-', StickerType.CENTER), edgeStickers[1], cornerStickers[3], edgeStickers[2], cornerStickers[2]};
+                new Sticker(color, '-', PieceType.CENTER), edgeStickers[1], cornerStickers[3], edgeStickers[2], cornerStickers[2]};
     }
 
     public void setColor(Color color) {
@@ -129,24 +125,11 @@ public class CubeFace extends Rectangle {
         return allStickers[index];
     }
 
-    public void setMemoEditMode(StickerType memoEditMode) {
+    public void setMemoEditMode(PieceType memoEditMode) {
         this.memoEditMode = memoEditMode;
     }
 
     public Sticker findClickedSticker(Point clickLoc) {
-//        if (memoEditMode == StickerType.CORNER) {
-//            for (Sticker sticker : cornerStickers) {
-//                if (sticker.contains(clickLoc)) {
-//                    return sticker;
-//                }
-//            }
-//        } else if (memoEditMode == StickerType.EDGE) {
-//            for (Sticker sticker : edgeStickers) {
-//                if (sticker.contains(clickLoc)) {
-//                    return sticker;
-//                }
-//            }
-//        }
         // search through all stickers
         for (Sticker sticker : allStickers) {
             if (sticker.contains(clickLoc)) {

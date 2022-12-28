@@ -1,7 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.*;
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -29,7 +28,7 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
     // for mouseListener to help with press and release comparison
     private Sticker pressedSticker;
 
-    private StickerType memoEditMode;
+    private PieceType memoEditMode;
     private boolean editingMemo = false;
 
 
@@ -57,7 +56,7 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
             }
         });
 
-        setMemoEditMode(StickerType.CORNER);
+        setMemoEditMode(PieceType.CORNER);
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -69,9 +68,9 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
     }
 
     public void setMemoSchemeToDefault() {
-        if (memoEditMode == StickerType.CORNER) {
+        if (memoEditMode == PieceType.CORNER) {
             setCornerMemoSchemeToDefault();
-        } else if (memoEditMode == StickerType.EDGE) {
+        } else if (memoEditMode == PieceType.EDGE) {
             setEdgeMemoSchemeToDefault();
         }
     }
@@ -114,7 +113,7 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
         //System.out.println("sfd: " + singleFaceDimension);
     }
 
-    public void setMemoEditMode(StickerType memoEditMode) {
+    public void setMemoEditMode(PieceType memoEditMode) {
         this.memoEditMode = memoEditMode;
     }
 
@@ -342,5 +341,9 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {
 
+    }
+
+    public Cube getCube() {
+        return cube;
     }
 }

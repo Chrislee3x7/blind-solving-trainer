@@ -6,7 +6,7 @@ public class ModeCycleJButton extends JButton {
 
     private ArrayList<String> modesTexts;
     private int modesIndex;
-    private ArrayList<StickerType> modeType;
+    private ArrayList<PieceType> modeType;
 
     public ModeCycleJButton(String... modesTexts) {
         super();
@@ -15,8 +15,8 @@ public class ModeCycleJButton extends JButton {
         //setUpActionListener();
         setText(modesTexts[0]);
         modeType = new ArrayList<>();
-        modeType.add(StickerType.CORNER);
-        modeType.add(StickerType.EDGE);
+        modeType.add(PieceType.CORNER);
+        modeType.add(PieceType.EDGE);
         //setBorder(BorderFactory.createMatteBorder(4, 4, 4, 4, Color.GRAY));
         setFocusPainted(false);
         modesIndex = 0;
@@ -28,11 +28,11 @@ public class ModeCycleJButton extends JButton {
         });
     }
 
-    public StickerType getModeType() {
+    public PieceType getModeType() {
         return modeType.get(modesIndex);
     }
 //
-//    public void setModesType(StickerType modeType) {
+//    public void setModesType(PieceType modeType) {
 //        this.modeType = modeType;
 //
 

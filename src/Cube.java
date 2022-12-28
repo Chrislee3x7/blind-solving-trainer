@@ -5,6 +5,7 @@
 import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 
 public class Cube {
@@ -23,9 +24,9 @@ public class Cube {
 
     private final HashSet<CubePiece> allPieces = new HashSet<>();
 
-    private final HashSet<CubePiece> cornerPieces = new HashSet<>();
+    private final HashMap<Integer, CubePiece> cornerPieces = new HashMap<>();
 
-    private final HashSet<CubePiece> edgePieces = new HashSet<>();
+    private final HashMap<Integer, CubePiece> edgePieces = new HashMap<>();
 
 
     public Cube() {
@@ -40,32 +41,32 @@ public class Cube {
     // Hardcoded values from cubeFaces. should not be changed
     private void setPieces() {
         // add cornerPieces
-        cornerPieces.add(getCornerPieceHelper(0,0,1,0,4,1));
-        cornerPieces.add(getCornerPieceHelper(0,1,4,0,3,1));
-        cornerPieces.add(getCornerPieceHelper(0,2,3,0,2,1));
-        cornerPieces.add(getCornerPieceHelper(0,3,2,0,1,1));
-        cornerPieces.add(getCornerPieceHelper(5,0,1,2,2,3));
-        cornerPieces.add(getCornerPieceHelper(5,1,2,2,3,3));
-        cornerPieces.add(getCornerPieceHelper(5,2,3,2,4,3));
-        cornerPieces.add(getCornerPieceHelper(5,3,4,2,1,3));
+        cornerPieces.put(0, getCornerPieceHelper(0,0,1,0,4,1));
+        cornerPieces.put(1, getCornerPieceHelper(0,1,4,0,3,1));
+        cornerPieces.put(2, getCornerPieceHelper(0,2,3,0,2,1));
+        cornerPieces.put(3, getCornerPieceHelper(0,3,2,0,1,1));
+        cornerPieces.put(4, getCornerPieceHelper(5,0,1,2,2,3));
+        cornerPieces.put(5, getCornerPieceHelper(5,1,2,2,3,3));
+        cornerPieces.put(6, getCornerPieceHelper(5,2,3,2,4,3));
+        cornerPieces.put(7, getCornerPieceHelper(5,3,4,2,1,3));
 
         // add edgePieces
-        edgePieces.add(getEdgePieceHelper(0,0,4,0));
-        edgePieces.add(getEdgePieceHelper(0,1,3,0));
-        edgePieces.add(getEdgePieceHelper(0,2,2,0));
-        edgePieces.add(getEdgePieceHelper(0,3,1,0));
-        edgePieces.add(getEdgePieceHelper(1,1,2,3));
-        edgePieces.add(getEdgePieceHelper(2,1,3,3));
-        edgePieces.add(getEdgePieceHelper(3,1,4,3));
-        edgePieces.add(getEdgePieceHelper(1,3,4,1));
-        edgePieces.add(getEdgePieceHelper(5,0,2,2));
-        edgePieces.add(getEdgePieceHelper(5,1,3,2));
-        edgePieces.add(getEdgePieceHelper(5,2,4,2));
-        edgePieces.add(getEdgePieceHelper(5,3,1,2));
+        edgePieces.put(0, getEdgePieceHelper(0,0,4,0));
+        edgePieces.put(1, getEdgePieceHelper(0,1,3,0));
+        edgePieces.put(2, getEdgePieceHelper(0,2,2,0));
+        edgePieces.put(3, getEdgePieceHelper(0,3,1,0));
+        edgePieces.put(4, getEdgePieceHelper(1,1,2,3));
+        edgePieces.put(5, getEdgePieceHelper(2,1,3,3));
+        edgePieces.put(6, getEdgePieceHelper(3,1,4,3));
+        edgePieces.put(7, getEdgePieceHelper(1,3,4,1));
+        edgePieces.put(8, getEdgePieceHelper(5,0,2,2));
+        edgePieces.put(9, getEdgePieceHelper(5,1,3,2));
+        edgePieces.put(10,getEdgePieceHelper(5,2,4,2));
+        edgePieces.put(11, getEdgePieceHelper(5,3,1,2));
 
         // add corner and edge pieces to all pieces
-        allPieces.addAll(cornerPieces);
-        allPieces.addAll(edgePieces);
+        allPieces.addAll(cornerPieces.values());
+        allPieces.addAll(edgePieces.values());
     }
 
     public void saveMemoScheme() {
@@ -147,9 +148,9 @@ public class Cube {
     }
 
     private CubePiece getCornerPieceHelper(int cubeFaceIndex1, int stickerIndex1, int cubeFaceIndex2, int stickerIndex2, int cubeFaceIndex3, int stickerIndex3) {
-//        System.out.println(cubeFaces[cubeFaceIndex1].getCornerStickers()[stickerIndex1] + "" +
-//                cubeFaces[cubeFaceIndex2].getCornerStickers()[stickerIndex2] + "" +
-//                cubeFaces[cubeFaceIndex3].getCornerStickers()[stickerIndex3]);
+        System.out.println(cubeFaces[cubeFaceIndex1].getCornerStickers()[stickerIndex1] + "" +
+                cubeFaces[cubeFaceIndex2].getCornerStickers()[stickerIndex2] + "" +
+                cubeFaces[cubeFaceIndex3].getCornerStickers()[stickerIndex3]);
         return CubePiece.createCornerPiece(cubeFaces[cubeFaceIndex1].getCornerStickers()[stickerIndex1],
                 cubeFaces[cubeFaceIndex2].getCornerStickers()[stickerIndex2],
                 cubeFaces[cubeFaceIndex3].getCornerStickers()[stickerIndex3]);
@@ -173,9 +174,9 @@ public class Cube {
 
     public ArrayList<Sticker> getStickerConflicts(Sticker sourceSticker) {
         ArrayList<Sticker> conflicts = new ArrayList<>();
-        StickerType st = sourceSticker.getStickerType();
+        PieceType st = sourceSticker.getStickerType();
         char conflictMemo = sourceSticker.getMemo();
-        if (st == StickerType.CORNER) {
+        if (st == PieceType.CORNER) {
             for (CubeFace face : cubeFaces) {
                 for (Sticker s : face.getCornerStickers()) {
                     if (s.getMemo() == conflictMemo) {
@@ -183,7 +184,7 @@ public class Cube {
                     }
                 }
             }
-        } else if (st == StickerType.EDGE) {
+        } else if (st == PieceType.EDGE) {
             for (CubeFace face : cubeFaces) {
                 for (Sticker s : face.getEdgeStickers()) {
                     if (s.getMemo() == conflictMemo) {
@@ -199,4 +200,11 @@ public class Cube {
         return cubeFaces;
     }
 
+    public HashMap<Integer, CubePiece> getCornerPieces() {
+        return cornerPieces;
+    }
+
+    public HashMap<Integer, CubePiece> getEdgePieces() {
+        return edgePieces;
+    }
 }

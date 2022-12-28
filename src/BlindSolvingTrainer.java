@@ -18,6 +18,7 @@ public class BlindSolvingTrainer {
     private CardLayout cardLayout;
     private JPanel mainPanel;
     private JPanel setMemosPanel;
+
     private CubeNetPanel cubeNetPanel;
     private ModeCycleJButton changeMemoEditModeButton;
 
@@ -63,7 +64,7 @@ public class BlindSolvingTrainer {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                System.out.println("trying to show a panel of name: " + panel.getName());
+                //System.out.println("trying to show a panel of name: " + panel.getName());
                 cardLayout.show(mainPanel, panel.getName());
 //                cardLayout.next(mainPanel);
 //                cardLayout.first(mainPanel);
@@ -124,7 +125,12 @@ public class BlindSolvingTrainer {
         JButton startButton = settingsPanel.setUpStartButton();
         startButton.addActionListener(e -> {
             changePanel(1);
+            trainingPanel.startTrainingSession(0, cubeNetPanel.getCube());
         });
+    }
+
+    public CubeNetPanel getCubeNetPanel() {
+        return cubeNetPanel;
     }
 
     public static void main(String[] args) {

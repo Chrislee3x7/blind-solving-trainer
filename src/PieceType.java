@@ -1,3 +1,3 @@
-public enum StickerType {
+public enum PieceType {
     CORNER, EDGE, CENTER
 }

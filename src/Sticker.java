@@ -1,7 +1,4 @@
 import java.awt.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class Sticker extends Rectangle {
 
@@ -12,19 +9,19 @@ public class Sticker extends Rectangle {
     // '-' is representative of a blank/undecided memo letter
     private char memo;
 
-    private StickerType stickerType;
+    private PieceType pieceType;
 
     private boolean editModeOn;
 
     private boolean conflicted;
 
 
-    public Sticker(Color trueColor, char memo, StickerType stickerType) {
+    public Sticker(Color trueColor, char memo, PieceType pieceType) {
         super();
         this.trueColor = trueColor;
         this.displayColor = trueColor;
         this.memo = memo;
-        this.stickerType = stickerType;
+        this.pieceType = pieceType;
         this.editModeOn = false;
     }
 
@@ -48,8 +45,8 @@ public class Sticker extends Rectangle {
         return editModeOn;
     }
 
-    public StickerType getStickerType() {
-        return stickerType;
+    public PieceType getStickerType() {
+        return pieceType;
     }
 
     public void setDisplayColor(Color newDisplayColor) {
@@ -78,6 +75,6 @@ public class Sticker extends Rectangle {
 
     @Override
     public String toString() {
-        return memo + "";
+        return memo + " " + displayColor;
     }
 }
