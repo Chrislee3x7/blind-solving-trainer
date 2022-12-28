@@ -10,12 +10,12 @@ public class CubeNetPanel extends JPanel implements MouseListener, KeyListener {
 
     private Cube cube;
 
-    // indexed 0 - 5: [0: White, 1: Red, 2: Green, 3: Orange, 4: Blue, 5: Yellow
+    // indexed 0 - 5: [0: White, 1: Orange, 2: Green, 3: Red, 4: Blue, 5: Yellow]
     public static final Color[] defaultColorScheme = new Color[]
             {Color.WHITE, // white
-                    new Color(235, 41, 2), // red
-                    new Color(9, 207, 2), // green
                     new Color(255, 135, 8), // orange
+                    new Color(9, 207, 2), // green
+                    new Color(235, 41, 2), // red
                     new Color(8, 119, 255), // blue
                     Color.YELLOW}; // yellow
     private Dimension panelDimension;

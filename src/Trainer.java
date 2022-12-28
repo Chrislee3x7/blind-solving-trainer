@@ -77,7 +77,7 @@ public class Trainer {
         recogTimeElapsed = System.currentTimeMillis() - recogStartTime;
         isPaused = true; // do not allow answer checks
         System.out.println(recogTimeElapsed/1000 + " seconds");
-        System.out.println("Correct answer : " + answerSticker.getMemo());
+        System.out.println("Correct answer : " + answerSticker.getMemo() + " " + answerSticker.getDisplayColor());
         System.out.println("press any key to continue");
         return answer == answerSticker.getMemo();
     }
