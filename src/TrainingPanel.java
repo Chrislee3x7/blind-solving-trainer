@@ -24,6 +24,7 @@ public class TrainingPanel extends JPanel implements KeyListener {
             public void run() {
                 setFocusable(true);
                 setOpaque(true);
+                setBackground(new Color(175, 208, 191));
             }
         });
     }
@@ -60,66 +61,146 @@ public class TrainingPanel extends JPanel implements KeyListener {
 
     private void paintPiece(Graphics g) {
         if (currCubePiece.getPieceType() == PieceType.CORNER) {
-            int radius = getHeight() / 7;
-            int apothem = (int) (radius * Math.cos(Math.PI / 6));
-            double stickerVerticalGap = radius * 0.1;
-            double stickerHorizontalGap = (stickerVerticalGap * Math.sqrt(3));
-
-            Polygon face1 = new Polygon();
-            face1.addPoint(getWidth() / 2, getHeight() / 2); // center of the hexagon
-            face1.addPoint((int) (getWidth() / 2 + apothem), getHeight() / 2 - radius / 2);
-            face1.addPoint(getWidth() / 2, getHeight() / 2 - radius); // top of the hexagon
-            face1.addPoint((int) (getWidth() / 2 - apothem), getHeight() / 2 - radius / 2);
-
-            Polygon sticker1 = new Polygon();
-            sticker1.addPoint(getWidth() / 2, (int) (getHeight() / 2 - stickerVerticalGap));
-            sticker1.addPoint((int) (getWidth() / 2 + apothem - stickerHorizontalGap), getHeight() / 2 - radius / 2);
-            sticker1.addPoint(getWidth() / 2 , (int) (getHeight() / 2 - radius + stickerVerticalGap));
-            sticker1.addPoint((int) (getWidth() / 2 - apothem + stickerHorizontalGap), getHeight() / 2 - radius / 2);
-
-            Polygon face2 = new Polygon();
-            face2.addPoint(getWidth() / 2, getHeight() / 2);
-            face2.addPoint(getWidth() / 2, getHeight() / 2 + radius);
-            face2.addPoint((int) (getWidth() / 2 + apothem), getHeight() / 2 + radius / 2);
-            face2.addPoint((int) (getWidth() / 2 + apothem), getHeight() / 2 - radius / 2);
-
-            Polygon sticker2 = new Polygon();
-            sticker2.addPoint((int) (getWidth() / 2 + stickerVerticalGap / 2 * Math.sqrt(3)), (int) (getHeight() / 2 + stickerVerticalGap / 2));
-            sticker2.addPoint((int) (getWidth() / 2 + stickerHorizontalGap / 2), (int) (getHeight() / 2 + radius - stickerHorizontalGap / 2 * Math.sqrt(3)));
-            sticker2.addPoint((int) (getWidth() / 2 + apothem - stickerVerticalGap / 2 * Math.sqrt(3)), (int) (getHeight() / 2 + radius / 2 - stickerVerticalGap / 2));
-            sticker2.addPoint((int) (getWidth() / 2 + apothem - stickerHorizontalGap / 2), (int) (getHeight() / 2 - radius / 2 + stickerHorizontalGap / 2 * Math.sqrt(3)));
-
-
-            Polygon face3 = new Polygon();
-            face3.addPoint(getWidth() / 2, getHeight() / 2);
-            face3.addPoint(getWidth() / 2, getHeight() / 2 + radius);
-            face3.addPoint((int) (getWidth() / 2 - apothem), getHeight() / 2 + radius / 2);
-            face3.addPoint((int) (getWidth() / 2 - apothem), getHeight() / 2 - radius / 2);
-
-            Polygon sticker3 = new Polygon();
-            sticker3.addPoint((int) (getWidth() / 2 - stickerVerticalGap / 2 * Math.sqrt(3)), (int) (getHeight() / 2 + stickerVerticalGap / 2));
-            sticker3.addPoint((int) (getWidth() / 2 - stickerHorizontalGap / 2), (int) (getHeight() / 2 + radius - stickerHorizontalGap / 2 * Math.sqrt(3)));
-            sticker3.addPoint((int) (getWidth() / 2 - apothem + stickerVerticalGap / 2 * Math.sqrt(3)), (int) (getHeight() / 2 + radius / 2 - stickerVerticalGap / 2));
-            sticker3.addPoint((int) (getWidth() / 2 - apothem + stickerHorizontalGap / 2), (int) (getHeight() / 2 - radius / 2 + stickerHorizontalGap / 2 * Math.sqrt(3)));
-
-            g.setColor(Color.BLACK);
-            g.fillPolygon(face1);
-            g.fillPolygon(face2);
-            g.fillPolygon(face3);
-            g.setColor(currCubePiece.getPieceStickers()[currOrientation].getDisplayColor());
-            g.fillPolygon(sticker1);
-            g.setColor(currCubePiece.getPieceStickers()[(currOrientation + 1) % 3].getDisplayColor());
-            g.fillPolygon(sticker2);
-            g.setColor(currCubePiece.getPieceStickers()[(currOrientation + 2) % 3].getDisplayColor());
-            g.fillPolygon(sticker3);
-
-            paintCornerTargetIndicator(g);
-
+            paintCorner(g);
+        } else if (currCubePiece.getPieceType() == PieceType.EDGE) {
+            paintEdge(g);
         }
     }
 
-    private void paintCornerTargetIndicator(Graphics g) {
-        int indicatorLoc = Math.abs(currTarget + (3 - currOrientation)) % 3;
+    private void paintEdge(Graphics g) {
+        // display facing left, right, or down :: extra: up
+        int radius = getHeight() / 7;
+        int apothem = (int) (radius * Math.cos(Math.PI / 6));
+        double stickerVerticalGap = radius * 0.1;
+        double stickerHorizontalGap = (stickerVerticalGap * Math.sqrt(3));
+
+        Polygon face1 = new Polygon();
+        face1.addPoint(getWidth() / 2, getHeight() / 2); // center of the hexagon
+        face1.addPoint((int) (getWidth() / 2 + apothem), getHeight() / 2 - radius / 2);
+        if (currOrientation % 3 != 0) {
+            face1.addPoint(getWidth() / 2, getHeight() / 2 - radius); // top of the hexagon
+        }
+        face1.addPoint((int) (getWidth() / 2 - apothem), getHeight() / 2 - radius / 2);
+
+        Polygon sticker1 = new Polygon();
+        sticker1.addPoint(getWidth() / 2, (int) (getHeight() / 2 - stickerVerticalGap));
+        sticker1.addPoint((int) (getWidth() / 2 + apothem - stickerHorizontalGap), getHeight() / 2 - radius / 2);
+        sticker1.addPoint(getWidth() / 2 , (int) (getHeight() / 2 - radius + stickerVerticalGap));
+        sticker1.addPoint((int) (getWidth() / 2 - apothem + stickerHorizontalGap), getHeight() / 2 - radius / 2);
+
+
+        Polygon face2 = new Polygon();
+        face2.addPoint(getWidth() / 2, getHeight() / 2);
+        face2.addPoint(getWidth() / 2, getHeight() / 2 + radius);
+        if (currOrientation % 3 != 1) {
+            face2.addPoint((int) (getWidth() / 2 + apothem), getHeight() / 2 + radius / 2);
+        }
+        face2.addPoint((int) (getWidth() / 2 + apothem), getHeight() / 2 - radius / 2);
+
+        Polygon sticker2 = new Polygon();
+        sticker2.addPoint((int) (getWidth() / 2 + stickerVerticalGap / 2 * Math.sqrt(3)), (int) (getHeight() / 2 + stickerVerticalGap / 2));
+        sticker2.addPoint((int) (getWidth() / 2 + stickerHorizontalGap / 2), (int) (getHeight() / 2 + radius - stickerHorizontalGap / 2 * Math.sqrt(3)));
+        sticker2.addPoint((int) (getWidth() / 2 + apothem - stickerVerticalGap / 2 * Math.sqrt(3)), (int) (getHeight() / 2 + radius / 2 - stickerVerticalGap / 2));
+        sticker2.addPoint((int) (getWidth() / 2 + apothem - stickerHorizontalGap / 2), (int) (getHeight() / 2 - radius / 2 + stickerHorizontalGap / 2 * Math.sqrt(3)));
+
+
+        Polygon face3 = new Polygon();
+        face3.addPoint(getWidth() / 2, getHeight() / 2);
+        face3.addPoint(getWidth() / 2, getHeight() / 2 + radius);
+        if (currOrientation % 3 != 2) {
+            face3.addPoint((int) (getWidth() / 2 - apothem), getHeight() / 2 + radius / 2);
+        }
+        face3.addPoint((int) (getWidth() / 2 - apothem), getHeight() / 2 - radius / 2);
+
+        Polygon sticker3 = new Polygon();
+        sticker3.addPoint((int) (getWidth() / 2 - stickerVerticalGap / 2 * Math.sqrt(3)), (int) (getHeight() / 2 + stickerVerticalGap / 2));
+        sticker3.addPoint((int) (getWidth() / 2 - stickerHorizontalGap / 2), (int) (getHeight() / 2 + radius - stickerHorizontalGap / 2 * Math.sqrt(3)));
+        sticker3.addPoint((int) (getWidth() / 2 - apothem + stickerVerticalGap / 2 * Math.sqrt(3)), (int) (getHeight() / 2 + radius / 2 - stickerVerticalGap / 2));
+        sticker3.addPoint((int) (getWidth() / 2 - apothem + stickerHorizontalGap / 2), (int) (getHeight() / 2 - radius / 2 + stickerHorizontalGap / 2 * Math.sqrt(3)));
+
+        g.setColor(Color.BLACK);
+        g.fillPolygon(face1);
+        g.fillPolygon(face2);
+        g.fillPolygon(face3);
+        int paintedSticker = currOrientation;
+        if (currOrientation % 3 != 0) {
+            g.setColor(currCubePiece.getPieceStickers()[paintedSticker % 2].getDisplayColor());
+            g.fillPolygon(sticker1);
+            paintedSticker++;
+        }
+        if (currOrientation % 3 != 1) {
+            g.setColor(currCubePiece.getPieceStickers()[paintedSticker % 2].getDisplayColor());
+            g.fillPolygon(sticker2);
+            paintedSticker++;
+        }
+        if (currOrientation % 3 != 2) {
+            g.setColor(currCubePiece.getPieceStickers()[paintedSticker % 2].getDisplayColor());
+            g.fillPolygon(sticker3);
+        }
+
+        int indicatorLoc = 0;
+        paintTargetIndicator(g, (currOrientation + currTarget + 1) % 3);
+    }
+
+    private void paintCorner(Graphics g) {
+        int radius = getHeight() / 7;
+        int apothem = (int) (radius * Math.cos(Math.PI / 6));
+        double stickerVerticalGap = radius * 0.1;
+        double stickerHorizontalGap = (stickerVerticalGap * Math.sqrt(3));
+
+        Polygon face1 = new Polygon();
+        face1.addPoint(getWidth() / 2, getHeight() / 2); // center of the hexagon
+        face1.addPoint((int) (getWidth() / 2 + apothem), getHeight() / 2 - radius / 2);
+        face1.addPoint(getWidth() / 2, getHeight() / 2 - radius); // top of the hexagon
+        face1.addPoint((int) (getWidth() / 2 - apothem), getHeight() / 2 - radius / 2);
+
+        Polygon sticker1 = new Polygon();
+        sticker1.addPoint(getWidth() / 2, (int) (getHeight() / 2 - stickerVerticalGap));
+        sticker1.addPoint((int) (getWidth() / 2 + apothem - stickerHorizontalGap), getHeight() / 2 - radius / 2);
+        sticker1.addPoint(getWidth() / 2 , (int) (getHeight() / 2 - radius + stickerVerticalGap));
+        sticker1.addPoint((int) (getWidth() / 2 - apothem + stickerHorizontalGap), getHeight() / 2 - radius / 2);
+
+        Polygon face2 = new Polygon();
+        face2.addPoint(getWidth() / 2, getHeight() / 2);
+        face2.addPoint(getWidth() / 2, getHeight() / 2 + radius);
+        face2.addPoint((int) (getWidth() / 2 + apothem), getHeight() / 2 + radius / 2);
+        face2.addPoint((int) (getWidth() / 2 + apothem), getHeight() / 2 - radius / 2);
+
+        Polygon sticker2 = new Polygon();
+        sticker2.addPoint((int) (getWidth() / 2 + stickerVerticalGap / 2 * Math.sqrt(3)), (int) (getHeight() / 2 + stickerVerticalGap / 2));
+        sticker2.addPoint((int) (getWidth() / 2 + stickerHorizontalGap / 2), (int) (getHeight() / 2 + radius - stickerHorizontalGap / 2 * Math.sqrt(3)));
+        sticker2.addPoint((int) (getWidth() / 2 + apothem - stickerVerticalGap / 2 * Math.sqrt(3)), (int) (getHeight() / 2 + radius / 2 - stickerVerticalGap / 2));
+        sticker2.addPoint((int) (getWidth() / 2 + apothem - stickerHorizontalGap / 2), (int) (getHeight() / 2 - radius / 2 + stickerHorizontalGap / 2 * Math.sqrt(3)));
+
+
+        Polygon face3 = new Polygon();
+        face3.addPoint(getWidth() / 2, getHeight() / 2);
+        face3.addPoint(getWidth() / 2, getHeight() / 2 + radius);
+        face3.addPoint((int) (getWidth() / 2 - apothem), getHeight() / 2 + radius / 2);
+        face3.addPoint((int) (getWidth() / 2 - apothem), getHeight() / 2 - radius / 2);
+
+        Polygon sticker3 = new Polygon();
+        sticker3.addPoint((int) (getWidth() / 2 - stickerVerticalGap / 2 * Math.sqrt(3)), (int) (getHeight() / 2 + stickerVerticalGap / 2));
+        sticker3.addPoint((int) (getWidth() / 2 - stickerHorizontalGap / 2), (int) (getHeight() / 2 + radius - stickerHorizontalGap / 2 * Math.sqrt(3)));
+        sticker3.addPoint((int) (getWidth() / 2 - apothem + stickerVerticalGap / 2 * Math.sqrt(3)), (int) (getHeight() / 2 + radius / 2 - stickerVerticalGap / 2));
+        sticker3.addPoint((int) (getWidth() / 2 - apothem + stickerHorizontalGap / 2), (int) (getHeight() / 2 - radius / 2 + stickerHorizontalGap / 2 * Math.sqrt(3)));
+
+        g.setColor(Color.BLACK);
+        g.fillPolygon(face1);
+        g.fillPolygon(face2);
+        g.fillPolygon(face3);
+        g.setColor(currCubePiece.getPieceStickers()[currOrientation].getDisplayColor());
+        g.fillPolygon(sticker1);
+        g.setColor(currCubePiece.getPieceStickers()[(currOrientation + 1) % 3].getDisplayColor());
+        g.fillPolygon(sticker2);
+        g.setColor(currCubePiece.getPieceStickers()[(currOrientation + 2) % 3].getDisplayColor());
+        g.fillPolygon(sticker3);
+
+        paintTargetIndicator(g, Math.abs(currTarget + (3 - currOrientation)) % 3);
+
+    }
+
+    private void paintTargetIndicator(Graphics g, int indicatorLoc) {
         System.out.println("currOrientation " + currOrientation + " currTarget: " + currTarget );
         Polygon indicator = new Polygon();
         int indicatorHeight = getHeight() / 20;

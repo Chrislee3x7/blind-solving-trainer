@@ -55,9 +55,9 @@ public class Trainer {
 
         // choose a random piece, orientation, and sticker and store them
         CubePiece currPiece = getRandomPiece();
-        int answerStickerIndex = chooseRandomStickerIndex(currPiece);
+        int answerStickerIndex = chooseRandomStickerIndex(currPiece.getPieceType());
         answerSticker =  currPiece.getPieceStickers()[answerStickerIndex];
-        int orientation = chooseRandomStickerIndex(currPiece);
+        int orientation = chooseRandomOrientation(currPiece.getPieceType());
 
         // display the piece with orientation, and correctStickerIndex
         tp.setPieceToBeDisplayed(answerStickerIndex, orientation, currPiece);
@@ -86,7 +86,7 @@ public class Trainer {
         // should practice edges and corners equally, total same num of stickers
         // so should use 50% chance
         int random = (int) (Math.random() * 2);
-        random = 0; // for testing how corner pieces look
+        //random = 1; // for testing how corner pieces look
         if (random == 0) {
             random = (int) (Math.random() * 8);
             return cube.getCornerPieces().get(random);
@@ -99,16 +99,28 @@ public class Trainer {
 
     // Used for 2 functions, orients the piece and also picks the sticker to guess
     // return corresponds
-    private int chooseRandomStickerIndex(CubePiece cubePiece) {
-        for (int i = 0; i < cubePiece.getPieceStickers().length; i++) {
-            System.out.println(cubePiece.getPieceStickers()[i] + "---");
-        }
-        if (cubePiece.getPieceType() == PieceType.CORNER) {
+    private int chooseRandomStickerIndex(PieceType pieceType) {
+//        for (int i = 0; i < cubePiece.getPieceStickers().length; i++) {
+//            System.out.println(cubePiece.getPieceStickers()[i] + "---");
+//        }
+        if (pieceType == PieceType.CORNER) {
             return (int) (Math.random() * 3);
-        } else if (cubePiece.getPieceType() == PieceType.EDGE) {
+        } else if (pieceType == PieceType.EDGE) {
             return (int) (Math.random() * 2);
+            //return (int) (Math.random() * 2);
         } else {
             new Exception("Center is not a valid cubePiece to choose random sticker from").printStackTrace();
+            return -1;
+        }
+    }
+
+    private int chooseRandomOrientation(PieceType pieceType) {
+        if (pieceType == PieceType.CORNER) {
+            return (int) (Math.random() * 3);
+        } else if (pieceType == PieceType.EDGE) {
+            return (int) (Math.random() * 3);
+        } else {
+            new Exception("Center is not a valid cubePiece to choose orientation from").printStackTrace();
             return -1;
         }
     }
